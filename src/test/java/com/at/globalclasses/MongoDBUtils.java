@@ -1,4 +1,5 @@
 package com.at.globalclasses;
+import org.json.JSONObject;
 
 public class MongoDBUtils {
     public static boolean existID(String env, String mDataBase, String collection, String id) {
@@ -20,6 +21,16 @@ public class MongoDBUtils {
         String id = db.foundRandomID(collection);
         db.close();
         return id;
+    }
+
+
+    public static String compareID(String env, String mDataBase, String collection, String response) {
+        MongoDBConnection db = new MongoDBConnection(env, mDataBase);
+
+        String result = db.getObjectByID(collection, response);
+
+        db.close();
+        return result;
     }
 
     public static boolean compareJsonString(String env, String mDataBase, String collection, String json) {
