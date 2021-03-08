@@ -5,12 +5,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import com.mongodb.client.FindIterable;
+import org.bson.Document;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.ResponseErrorHandler;
@@ -66,7 +71,6 @@ public class ApiTools {
 
         return response;
     }
-
 
     public ResponseEntity<String> PUTMethod(String apiPath, String requestBody) {
         try {

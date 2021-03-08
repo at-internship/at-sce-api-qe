@@ -6,7 +6,7 @@ public class BasicSecurityUtil {
     public String environment, requestBody, responseBody, apiResource;
     public ResponseEntity<String> response;
     public ApiTools ServiceApi;
-    public String type;
+    public String type, uridb;
     public String method;
     public String expectedMessage;
     public String param;

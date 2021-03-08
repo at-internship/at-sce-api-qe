@@ -10,3 +10,7 @@
 #IDE files
 .idea/
 *.iml
+
+#Config properties
+*.properties
+

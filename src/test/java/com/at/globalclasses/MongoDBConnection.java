@@ -10,13 +10,19 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import com.google.gson.Gson;
+import org.openqa.selenium.json.Json;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static com.mongodb.client.model.Projections.fields;
+import static com.mongodb.client.model.Projections.include;
 import static java.lang.Integer.parseInt;
 
 public class MongoDBConnection {
@@ -156,6 +162,72 @@ public class MongoDBConnection {
         return bool;
 
     }
+
+    public JSONArray allUsersInfo(String collection) {
+
+        String firstName="",lastName="",email="",password="";
+        int type=0,status=0;
+
+        MongoCollection<Document> coll = mDataBase.getCollection(collection);
+
+        FindIterable<Document> findIterable = coll.find();
+
+        JSONArray usersMongoArray = new JSONArray();
+
+       for (Document document : findIterable) {
+
+           firstName=null;
+           lastName=null;
+           email=null;
+           password=null;
+           JSONObject mongo = new JSONObject(document.toJson());
+           JSONObject jsonMongo = new JSONObject();
+
+           String id = mongo.getJSONObject("_id").get("$oid").toString();
+           jsonMongo.put("id",id);
+           if (mongo.has("type")) {
+               type = mongo.getInt("type");
+           }
+           jsonMongo.put("type",type);
+           if (mongo.has("firstName")) {
+           firstName = mongo.getString("firstName");
+           }
+           jsonMongo.put("firstName",firstName);
+           if (mongo.has("lastName")) {
+               lastName = mongo.getString("lastName");
+           }
+           jsonMongo.put("lastName",lastName);
+           if (mongo.has("email")) {
+                email = mongo.getString("email");
+           }
+           jsonMongo.put("email",email);
+           if (mongo.has("password")) {
+                password = mongo.getString("password");
+           }
+           jsonMongo.put("password",password);
+           if (mongo.has("status")) {
+                status = mongo.getInt("status");
+           }
+           jsonMongo.put("status",status);
+
+           usersMongoArray.put(jsonMongo);
+
+                  }
+
+           return usersMongoArray;
+
+    }
+
+    public long collectionSize(String collection) {
+        long number = 0;
+
+        MongoCollection<Document> coll = mDataBase.getCollection(collection);
+        number = coll.countDocuments();
+
+        return number;
+
+    }
+
     public boolean compareAll(String mongoJson, String object) {
         boolean bool = false;
         if (mongoJson.equals(object)) {
