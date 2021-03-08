@@ -36,4 +36,15 @@ public class MongoDBUtils {
         return bool;
     }
 
+    
+    public static String compareJsonFromDatabase(String env, String mDataBase, String collection,String email) {
+        MongoDBConnection db = new MongoDBConnection(env, mDataBase);
+        String jsonFronDatabase;
+        jsonFronDatabase = db.getJsonFromDatabase(collection,email);
+        db.close();
+        return jsonFronDatabase;
+    }
+    
+    
+    
 }
