@@ -44,23 +44,21 @@ public class Get {
     @Then("The status code should be {string}")
     public void the_status_code_should_be(String statusCode) {
         int status = Integer.parseInt(statusCode);
-        Assert.assertEquals(status, base.ServiceApi.response.getStatusCode().value());
+            Assert.assertEquals(status, base.ServiceApi.response.getStatusCode().value());
+
     }
 
     @Then("Information retrieved from service should match with DB collection {string}")
     public void information_retrieved_from_service_should_match_with_DB_collection(String collection) {
 
-        MongoDBUtils mongo = new MongoDBUtils();
-        String collectionBody = mongo.compareID(base.environment, base.dataBase, collection, base.response.getBody());
         JSONObject jsonRequest = new JSONObject(base.requestBody);
+
+        MongoDBUtils mongo = new MongoDBUtils();
+        String collectionBody = mongo.obtainObject(base.environment, base.dataBase, collection, base.response.getBody());
         JSONObject jsonResponse = new JSONObject(collectionBody);
 
-        Assert.assertEquals(jsonRequest.getInt("type"),jsonResponse.getInt("type"));
-        Assert.assertEquals(jsonRequest.getString("firstName"),jsonResponse.getString("firstName"));
-        Assert.assertEquals(jsonRequest.getString("lastName"),jsonResponse.getString("lastName"));
-        Assert.assertEquals(jsonRequest.getString("email"),jsonResponse.getString("email"));
-        Assert.assertEquals(jsonRequest.getString("password"),jsonResponse.getString("password"));
-        Assert.assertEquals(jsonRequest.getInt("status"),jsonResponse.getInt("status"));
+        boolean bool = mongo.compareDocuments(jsonRequest,jsonResponse);
+        Assert.assertTrue(bool);
 
         JSONObject json = new JSONObject(base.response.getBody());
         String expectedResult = json.getString("id");

@@ -24,7 +24,7 @@ Feature: Send users values to create a user in the DB
   @2
   Scenario: Send a type data in string format with all the other data in the other fields being correct
     Given I have the following information for new user and build a request body:
-      | type      | "3"                   |
+      | type      | 3                     |
       | firstName | Juan                  |
       | lastName  | Lopez                 |
       | email     | juan@agilethought.com |
@@ -37,8 +37,8 @@ Feature: Send users values to create a user in the DB
 
   @3
   Scenario: Send a null in the type field with all the other data in the other fields being correct
-    Given I have the following information for new user and build a request body:
-      | type      | null                         |
+    Given I have the following information for new user and build a request body with type or status as null:
+      | type      |                              |
       | firstName | Migue                        |
       | lastName  | Olmos                        |
       | email     | miguelolmos@agilethought.com |
@@ -67,7 +67,7 @@ Feature: Send users values to create a user in the DB
   Scenario: Send a null in the type field with all the other data in the other fields being correct
     Given I have the following information for new user and build a request body:
       | type      | 3                       |
-      | firstName | null                    |
+      | firstName |                         |
       | lastName  | Doriga                  |
       | email     | doriga@agilethought.com |
       | password  | doriganuNU              |
@@ -96,7 +96,7 @@ Feature: Send users values to create a user in the DB
     Given I have the following information for new user and build a request body:
       | type      | 1                          |
       | firstName | Ana                        |
-      | lastName  | null                       |
+      | lastName  |                            |
       | email     | anamadrid@agilethought.com |
       | password  | ana88                      |
       | status    | 1                          |
@@ -125,7 +125,7 @@ Feature: Send users values to create a user in the DB
       | type      | 8        |
       | firstName | Bryan    |
       | lastName  | Garza    |
-      | email     | null     |
+      | email     |          |
       | password  | Garza123 |
       | status    | 0        |
     And   I am targeting endpoint for "create_users"
@@ -154,7 +154,7 @@ Feature: Send users values to create a user in the DB
       | firstName | Amelia                  |
       | lastName  | Escareno                |
       | email     | amelia@agilethought.com |
-      | password  | null                    |
+      | password  |                         |
       | status    | 1                       |
     And   I am targeting endpoint for "create_users"
     When  I send a POST request
@@ -169,7 +169,7 @@ Feature: Send users values to create a user in the DB
       | lastName  | Espindola               |
       | email     | carlos@agilethought.com |
       | password  | CarEsp                  |
-      | status    | "1"                     |
+      | status    | 1                       |
     And   I am targeting endpoint for "create_users"
     When  I send a POST request
     Then  The status code should be "400"
@@ -177,13 +177,13 @@ Feature: Send users values to create a user in the DB
 
   @13
   Scenario: Send a null in the status field with all the other data in the other fields being correct
-    Given I have the following information for new user and build a request body:
+    Given I have the following information for new user and build a request body with type or status as null:
       | type      | 5                       |
       | firstName | Karina                  |
       | lastName  | Delgado                 |
       | email     | kardel@agilethought.com |
       | password  | K4r1N4123               |
-      | status    | null                    |
+      | status    |                         |
     And   I am targeting endpoint for "create_users"
     When  I send a POST request
     Then  The status code should be "201"

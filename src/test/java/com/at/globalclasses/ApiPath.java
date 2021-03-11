@@ -1,7 +1,7 @@
 package com.at.globalclasses;
 
 public enum ApiPath {
-    create_users("/at-sce-api/api/v1/users");
+    create_users("/api/v1/users");
     private String apiPath;
 
     ApiPath(String apiPath){
