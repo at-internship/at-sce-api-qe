@@ -1,11 +1,17 @@
 package com.at.globalclasses;
 
+import com.google.gson.Gson;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
+import static com.mongodb.client.model.Projections.*;
+
+import cucumber.deps.com.thoughtworks.xstream.converters.reflection.FieldKeySorter;
+
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.json.JSONArray;
@@ -17,7 +23,10 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
+
 import static java.lang.Integer.parseInt;
+
 
 public class MongoDBConnection {
 
@@ -163,4 +172,29 @@ public class MongoDBConnection {
         }
         return bool;
     }
+    
+    
+    public String getJsonFromDatabase(String collection,String email) {
+        
+        String jsonString = "";
+        
+        MongoCollection<Document> coll = mDataBase.getCollection(collection);
+        FindIterable<Document> findIterable = coll.find(Filters.eq("email", email)).projection(fields(include("email","password"), excludeId()));
+                
+        try {
+            for (Document doc : findIterable) {
+                JSONObject monObject = new JSONObject(doc.toJson());
+                jsonString = monObject.toString();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+		return jsonString;
+            
+    }
+    
+    
+    
+    
 }
