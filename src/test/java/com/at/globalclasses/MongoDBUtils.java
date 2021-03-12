@@ -23,16 +23,6 @@ public class MongoDBUtils {
         return id;
     }
 
-
-    public static String obtainObject(String env, String mDataBase, String collection, String responseId) {
-        MongoDBConnection db = new MongoDBConnection(env, mDataBase);
-        JSONObject json = new JSONObject(responseId);
-        String result = db.getObjectByID(collection, json.getString("id"));
-
-        db.close();
-        return result;
-    }
-
     public static boolean compareJsonString(String env, String mDataBase, String collection, String json) {
         MongoDBConnection db = new MongoDBConnection(env, mDataBase);
         boolean bool;
@@ -45,6 +35,24 @@ public class MongoDBUtils {
             db.close();
         }
         return bool;
+    }
+
+    
+    public static String compareJsonFromDatabase(String env, String mDataBase, String collection,String email) {
+        MongoDBConnection db = new MongoDBConnection(env, mDataBase);
+        String jsonFronDatabase;
+        jsonFronDatabase = db.getJsonFromDatabase(collection,email);
+        db.close();
+        return jsonFronDatabase;
+    }
+
+     public static String obtainObject(String env, String mDataBase, String collection, String responseId) {
+        MongoDBConnection db = new MongoDBConnection(env, mDataBase);
+        JSONObject json = new JSONObject(responseId);
+        String result = db.getObjectByID(collection, json.getString("id"));
+
+        db.close();
+        return result;
     }
 
     public boolean compareDocuments(JSONObject firstObject, JSONObject secondObject){
@@ -121,5 +129,7 @@ public class MongoDBUtils {
 
         return bool;
     }
-
+    
+    
+    
 }

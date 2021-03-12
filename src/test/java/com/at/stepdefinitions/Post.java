@@ -1,30 +1,36 @@
 package com.at.stepdefinitions;
 
-import java.lang.NumberFormatException;
 import com.at.globalclasses.*;
+import com.at.globalclasses.domain.UserRequest;
+import com.google.gson.Gson;
+
+import gherkin.deps.com.google.gson.JsonParser;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.cucumber.messages.internal.com.google.gson.JsonObject;
-import io.cucumber.java.en.And;
-
-import org.json.JSONObject;
 import org.junit.Assert;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.json.JSONObject;
 
-import java.sql.SQLOutput;
 import java.util.Map;
 
 public class Post {
     private BasicSecurityUtil base;
+    
+    private UserRequest userRequest =  new UserRequest();
 
     public Post(BasicSecurityUtil base) {
         this.base = base;
     }
 
+
+    @Given("I have access to {string} database")
+    public void i_have_access_to_database(String dataBase) throws Exception {
+        base.dataBase = dataBase;
+
+    }
+    
     @Given("I have the following information for new user and build a request body:")
-    public void i_have_the_following_information_for_new_user(Map<String, String> userTable) throws Exception {
+    public void i_have_the_following_information_for_new_user_and_build_a_request_body(Map<String, String> userTable) throws Exception {
 
         int typeValue = Integer.parseInt(userTable.get("type"));
         int statusValue = Integer.parseInt(userTable.get("status"));
@@ -39,8 +45,10 @@ public class Post {
         base.requestBody = jsonBodyRequest.toString();
 
     }
-    @Given("I have the following information for new user and build a request body with type or status as null:")
-    public void i_have_the_following_information_for_new_user_with_type_or_status_as_null(Map<String,String> userTable) throws Exception {
+
+    @Given("I have the following information for a new user and build a request body for a null:")
+    public void i_have_the_following_information_for_a_new_user_and_build_a_request_body_for_a_null(Map<String,String> userTable) throws Exception {
+        //for null values
         JSONObject jsonBodyRequest = new JSONObject();
         jsonBodyRequest.put("type", userTable.get("type"));
         jsonBodyRequest.put("firstName", userTable.get("firstName"));
@@ -50,23 +58,82 @@ public class Post {
         jsonBodyRequest.put("status", userTable.get("status"));
         base.requestBody = jsonBodyRequest.toString();
     }
+   
+    @Given("I have the following information for  authenticate a user:")
+    public void i_have_the_following_information_for_authenticate_a_user(Map<String, String> dataTable) throws Exception{
+    	userRequest.setEmail(dataTable.get("email"));
+    	userRequest.setPassword(dataTable.get("password"));
+    }
 
-
-
-    @And("I am targeting endpoint for {string}")
+    @Given("I build my request body with information shown above")
+    public void i_build_my_request_body_with_information_shown_above() {
+        Gson gson =  new Gson();
+        base.requestBody = gson.toJson(userRequest);
+    }
+    @Given("I am targeting endpoint for {string}")
     public void i_am_targeting_endpoint_for(String apiPath) {
-        for (ApiPath a : ApiPath.values()) {
-            if (a.name().equals(apiPath)) {
-                base.apiResource = a.getApiPath();
-            }
+        for(ApiPath a: ApiPath.values()) {
+        	if(a.name().equals(apiPath)) {
+        		base.apiResource = a.getApiPath();
+        	}
         }
     }
-
     @When("I send a POST request")
     public void i_send_a_POST_request() {
-        base.response = base.ServiceApi.POSTMethod(base.ServiceApi.hostName, base.apiResource, base.requestBody);
+    	base.response=base.ServiceApi.POSTMethod(base.ServiceApi.hostName, base.apiResource, base.requestBody);
+    }
+    
+    @Then("The status code should be {string}")
+    public void the_status_code_should_be(String statusCode) {
+        int status = Integer.parseInt(statusCode);
+        Assert.assertEquals(status, base.ServiceApi.response.getStatusCode().value());
     }
 
+    
+    @Given("I have access to the database at-sce-db")
+    public void i_have_access_to_the_database() {
+    	MongoDBUtils compare =  new MongoDBUtils();
+    	String jsonFromDatabase;
+    	jsonFromDatabase = compare.compareJsonFromDatabase(base.environment, base.dataBase, "users",userRequest.getEmail());
+    	JsonParser parser = new JsonParser();    	
+    	Assert.assertEquals(parser.parse(jsonFromDatabase),parser.parse(base.requestBody));
+    }
+    
+
+    	@Then("There is not match with any value in DB at-sce-db")
+    	public void there_is_not_match_with_any_value_in_DB(String database) {
+        	MongoDBUtils compare =  new MongoDBUtils();
+        	String jsonFromDatabase;
+        	jsonFromDatabase = compare.compareJsonFromDatabase(base.environment, base.dataBase, "users",userRequest.getEmail());
+        	Assert.assertEquals("",jsonFromDatabase);
+    	}
+    
+    @Then("Information retrieved from Post service should match with DB collection {string}")
+    public void information_retrieved_from_service_should_match_with_DB_collection(String collection) {
+
+        JSONObject jsonRequest = new JSONObject(base.requestBody);
+
+        MongoDBUtils mongo = new MongoDBUtils();
+        String collectionBody = mongo.obtainObject(base.environment, base.dataBase, collection, base.response.getBody());
+        JSONObject jsonResponse = new JSONObject(collectionBody);
+
+        boolean bool = mongo.compareDocuments(jsonRequest,jsonResponse);
+        Assert.assertTrue(bool);
+
+        JSONObject json = new JSONObject(base.response.getBody());
+        String expectedResult = json.getString("id");
+        Assert.assertEquals(expectedResult, jsonResponse.getJSONObject("_id").get("$oid").toString());
+    }
+
+
+
+
+
+
+
+
+
+    
 
 
 }

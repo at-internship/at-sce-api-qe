@@ -1,7 +1,9 @@
 package com.at.globalclasses;
 
 public enum ApiPath {
-    create_users("/api/v1/users");
+    create_users("/api/v1/users"),
+	authenticate_users("/api/v1/login");
+
     private String apiPath;
 
     ApiPath(String apiPath){

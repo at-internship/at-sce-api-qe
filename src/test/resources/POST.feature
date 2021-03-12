@@ -1,11 +1,71 @@
 @Post
 
-Feature: Send users values to create a user in the DB
+Feature: POST operation to create and authenticate a user
 
   Background:
     Given I am working on "QA" environment
     And I am targeting "at-sce-api" service
     And I have access to "at-sce-db" database
+
+
+  @US_015 @1
+  Scenario: Authenticate a user with a register  email and register password in database
+    Given I have the following information for  authenticate a user:
+      | email     | ing.alexbolio@gmail.com |
+      | password  | V4p0r30n                |
+    And   I build my request body with information shown above
+    And   I am targeting endpoint for "authenticate_users"
+    When  I send a POST request
+    Then  The status code should be "200"
+    And I have access to the database at-sce-db
+
+
+
+  @US_015 @2
+  Scenario: Authenticate a user with a register  email and null password in database
+    Given I have the following information for  authenticate a user:
+      | email     | kevin@agilethouhgt.com |
+      | password  |                        |
+    And   I build my request body with information shown above
+    And   I am targeting endpoint for "authenticate_users"
+    When  I send a POST request
+    Then  The status code should be "200"
+    And I have access to the database at-sce-db
+
+  @US_015 @3
+  Scenario: Fail Authentication with a not register  email and a register password in database
+    Given I have the following information for  authenticate a user:
+      | email     | pruebas@gmail.com |
+      | password  | V4p0r30n          |
+    And   I build my request body with information shown above
+    And   I am targeting endpoint for "authenticate_users"
+    When  I send a POST request
+    Then  The status code should be "401"
+    And   There is not match with any value in DB at-sce-db
+
+
+  @US_015 @4
+  Scenario: Fail Authentication  with a not register  email and a not register password in database
+    Given I have the following information for  authenticate a user:
+      | email     | pruebas@gmail.com |
+      | password  | pruebas           |
+    And   I build my request body with information shown above
+    And   I am targeting endpoint for "authenticate_users"
+    When  I send a POST request
+    Then  The status code should be "401"
+    And   There is not match with any value in DB at-sce-db
+
+
+  @US_015 @5
+  Scenario: Fail Authentication  with a null email and a null password
+    Given I have the following information for  authenticate a user:
+      | email     |  |
+      | password  |  |
+    And   I build my request body with information shown above
+    And   I am targeting endpoint for "authenticate_users"
+    When  I send a POST request
+    Then  The status code should be "500"
+
 
   @US_018 @1
   Scenario: Send all correct data to create a User
@@ -19,9 +79,9 @@ Feature: Send users values to create a user in the DB
     And   I am targeting endpoint for "create_users"
     When  I send a POST request
     Then  The status code should be "201"
-    And Information retrieved from service should match with DB collection "users"
+    And Information retrieved from Post service should match with DB collection "users"
 
-  @2
+  @US_018 @2
   Scenario: Send a type data in string format with all the other data in the other fields being correct
     Given I have the following information for new user and build a request body:
       | type      | 3                     |
@@ -33,11 +93,11 @@ Feature: Send users values to create a user in the DB
     And   I am targeting endpoint for "create_users"
     When  I send a POST request
     Then  The status code should be "400"
-    And  Information retrieved from service should match with DB collection "users"
+    And Information retrieved from Post service should match with DB collection "users"
 
-  @3
+  @US_018 @3
   Scenario: Send a null in the type field with all the other data in the other fields being correct
-    Given I have the following information for new user and build a request body with type or status as null:
+    Given I have the following information for a new user and build a request body for a null:
       | type      |                              |
       | firstName | Migue                        |
       | lastName  | Olmos                        |
@@ -47,9 +107,9 @@ Feature: Send users values to create a user in the DB
     And   I am targeting endpoint for "create_users"
     When  I send a POST request
     Then  The status code should be "201"
-    And  Information retrieved from service should match with DB collection "users"
+    And Information retrieved from Post service should match with DB collection "users"
 
-  @4
+  @US_018 @4
   Scenario: Send a firstName data not in string format with all the other data in the other fields being correct
     Given I have the following information for new user and build a request body:
       | type      | 2                       |
@@ -61,11 +121,11 @@ Feature: Send users values to create a user in the DB
     And   I am targeting endpoint for "create_users"
     When  I send a POST request
     Then  The status code should be "400"
-    And Information retrieved from service should match with DB collection "users"
+    And Information retrieved from Post service should match with DB collection "users"
 
-  @5
+  @US_018  @5
   Scenario: Send a null in the type field with all the other data in the other fields being correct
-    Given I have the following information for new user and build a request body:
+    Given I have the following information for a new user and build a request body for a null:
       | type      | 3                       |
       | firstName |                         |
       | lastName  | Doriga                  |
@@ -75,9 +135,9 @@ Feature: Send users values to create a user in the DB
     And   I am targeting endpoint for "create_users"
     When  I send a POST request
     Then  The status code should be "201"
-    And  Information retrieved from service should match with DB collection "users"
+    And Information retrieved from Post service should match with DB collection "users"
 
-  @6
+  @US_018 @6
   Scenario: Send a lastName data not in string format with all the other data in the other fields being correct
     Given I have the following information for new user and build a request body:
       | type      | 2                         |
@@ -89,11 +149,11 @@ Feature: Send users values to create a user in the DB
     And   I am targeting endpoint for "create_users"
     When  I send a POST request
     Then  The status code should be "400"
-    And  Information retrieved from service should match with DB collection "users"
+    And Information retrieved from Post service should match with DB collection "users"
 
-  @7
+  @US_018 @7
   Scenario: Send a null in the lastName field with all the other data in the other fields being correct
-    Given I have the following information for new user and build a request body:
+    Given I have the following information for a new user and build a request body for a null:
       | type      | 1                          |
       | firstName | Ana                        |
       | lastName  |                            |
@@ -103,9 +163,9 @@ Feature: Send users values to create a user in the DB
     And   I am targeting endpoint for "create_users"
     When  I send a POST request
     Then  The status code should be "201"
-    And  Information retrieved from service should match with DB collection "users"
+    And Information retrieved from Post service should match with DB collection "users"
 
-  @8
+  @US_018 @8
   Scenario: Send a email data not in string format with all the other data in the other fields being correct
     Given I have the following information for new user and build a request body:
       | type      | 24           |
@@ -117,11 +177,11 @@ Feature: Send users values to create a user in the DB
     And   I am targeting endpoint for "create_users"
     When  I send a POST request
     Then  The status code should be "400"
-    And  Information retrieved from service should match with DB collection "users"
+    And Information retrieved from Post service should match with DB collection "users"
 
-  @9
+  @US_018 @9
   Scenario: Send a null in the email field with all the other data in the other fields being correct
-    Given I have the following information for new user and build a request body:
+    Given I have the following information for a new user and build a request body for a null:
       | type      | 8        |
       | firstName | Bryan    |
       | lastName  | Garza    |
@@ -131,9 +191,9 @@ Feature: Send users values to create a user in the DB
     And   I am targeting endpoint for "create_users"
     When  I send a POST request
     Then  The status code should be "201"
-    And  Information retrieved from service should match with DB collection "users"
+    And Information retrieved from Post service should match with DB collection "users"
 
-  @10
+  @US_018 @10
   Scenario: Send a password data not in string format with all the other data in the other fields being correct
     Given I have the following information for new user and build a request body:
       | type      | 4                       |
@@ -145,11 +205,11 @@ Feature: Send users values to create a user in the DB
     And   I am targeting endpoint for "create_users"
     When  I send a POST request
     Then  The status code should be "400"
-    And  Information retrieved from service should match with DB collection "users"
+    And Information retrieved from Post service should match with DB collection "users"
 
-  @11
+  @US_018 @11
   Scenario: Send a null in the password field with all the other data in the other fields being correct
-    Given I have the following information for new user and build a request body:
+    Given I have the following information for a new user and build a request body for a null:
       | type      | 1                       |
       | firstName | Amelia                  |
       | lastName  | Escareno                |
@@ -159,9 +219,9 @@ Feature: Send users values to create a user in the DB
     And   I am targeting endpoint for "create_users"
     When  I send a POST request
     Then  The status code should be "201"
-    And Information retrieved from service should match with DB collection "users"
+    And Information retrieved from Post service should match with DB collection "users"
 
-  @12
+  @US_018 @12
   Scenario: Send a status data in string format with all the other data in the other fields being correct
     Given I have the following information for new user and build a request body:
       | type      | 6                       |
@@ -173,11 +233,11 @@ Feature: Send users values to create a user in the DB
     And   I am targeting endpoint for "create_users"
     When  I send a POST request
     Then  The status code should be "400"
-    And  Information retrieved from service should match with DB collection "users"
+    And Information retrieved from Post service should match with DB collection "users"
 
-  @13
+  @US_018 @13
   Scenario: Send a null in the status field with all the other data in the other fields being correct
-    Given I have the following information for new user and build a request body with type or status as null:
+    Given I have the following information for a new user and build a request body for a null:
       | type      | 5                       |
       | firstName | Karina                  |
       | lastName  | Delgado                 |
@@ -187,4 +247,6 @@ Feature: Send users values to create a user in the DB
     And   I am targeting endpoint for "create_users"
     When  I send a POST request
     Then  The status code should be "201"
-    And Information retrieved from service should match with DB collection "users"
+    And Information retrieved from Post service should match with DB collection "users"
+
+    
