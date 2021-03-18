@@ -71,13 +71,13 @@ public boolean compareDocumentsArrays(JSONArray firstArray, JSONArray secondArra
        if(bool == false){
            break;
        }
-       if((password1==null && password=="")||(password==null && password1=="")||(password==null && password1==null)){
+     /*  if((password1==null && password=="")||(password==null && password1=="")||(password==null && password1==null)){
            bool=true; }
        else{
            bool = password.equals(password1); }
        if(bool == false){
            break;
-       }
+       }*/
        if(status==status1){
        bool = true;}
        if(bool == false){
@@ -131,7 +131,6 @@ public long numberOfUsersDB(String env, String mDataBase, String collection) {
     }
 
 
-////// Encapsulation
     public long getNumberUsersDB() {
         return numberUsersDB;
     }

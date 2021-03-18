@@ -1,8 +1,14 @@
 package com.at.globalclasses;
 
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import gherkin.deps.com.google.gson.JsonParser;
+
+import static java.lang.Integer.parseInt;
+
 public class MongoDBUtils {
     public static boolean existID(String env, String mDataBase, String collection, String id) {
         MongoDBConnection db = new MongoDBConnection(env, mDataBase);
@@ -27,6 +33,7 @@ public class MongoDBUtils {
 
     public static boolean compareJsonString(String env, String mDataBase, String collection, String json) {
         MongoDBConnection db = new MongoDBConnection(env, mDataBase);
+
         boolean bool;
         try {
             bool = db.compareJsonString(collection, json);
@@ -38,6 +45,7 @@ public class MongoDBUtils {
         }
         return bool;
     }
+
 
 
 

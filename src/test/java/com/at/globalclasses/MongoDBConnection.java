@@ -125,11 +125,10 @@ public class MongoDBConnection {
         return id;
     }
 
-    public boolean compareJsonString(String collection, String object) {
+    public boolean compareJsonString( String collection, String object) {
         boolean bool = false;
         String data = "", category = "", title = "", description = "", img="";
         String status = "";
-
         MongoCollection<Document> coll = mDataBase.getCollection(collection);
         FindIterable<Document> findIterable = coll.find();
 
