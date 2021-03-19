@@ -10,7 +10,10 @@
 #IDE files
 .idea/
 *.iml
+*.project
+*.settings
+*.classpath
+*.factorypath
 
-#Config properties
+#Properties files
 *.properties
-

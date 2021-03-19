@@ -1,3 +1,4 @@
+
 package com.at.globalclasses;
 
 import java.io.FileNotFoundException;
@@ -5,13 +6,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.ResponseErrorHandler;
@@ -22,7 +25,10 @@ public class ApiTools {
     public ResponseEntity<String> response;
     public ResponseEntity<String> requestBody;
     public MediaType contentType = MediaType.APPLICATION_JSON;
-    public RestTemplate restTemplate = new RestTemplate();
+    //We can handle 401 and 404 status code 
+    ClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory(HttpClients.createDefault());
+    RestTemplate restTemplate = new RestTemplate(requestFactory);
+    
     public HttpHeaders headers = new HttpHeaders();
     public String hostName;
     public String stringCredentials;
@@ -68,6 +74,7 @@ public class ApiTools {
         return response;
     }
 
+
     public ResponseEntity<String> PUTMethod(String apiPath, String requestBody) {
         try {
 
@@ -81,6 +88,7 @@ public class ApiTools {
                 public boolean hasError(ClientHttpResponse response) throws IOException {
                     return false;
                 }
+
 
                 @Override
                 public void handleError(ClientHttpResponse response) throws IOException {
@@ -178,5 +186,6 @@ public class ApiTools {
         }
         return prop.getProperty(property);
     }
+
 
 }

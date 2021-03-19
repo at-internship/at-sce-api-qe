@@ -15,9 +15,9 @@ public boolean compareDocumentsArrays(JSONArray firstArray, JSONArray secondArra
    boolean bool=false;
    int arrayLength = secondArray.length();
    for(long i=0;i<arrayLength;i++){
-     String id,firstName,lastName,email,password;
-     String id1,firstName1,lastName1,email1,password1;
-     int j= (int) i, type, status, type1,status1;
+     String id,firstName,lastName,email,password, status , type, type1;
+     String id1,firstName1,lastName1,email1,password1 ,status1;
+     int j= (int) i;
 
        JSONObject firstObject;
        JSONObject secondObject;
@@ -34,8 +34,8 @@ public boolean compareDocumentsArrays(JSONArray firstArray, JSONArray secondArra
      try{password = firstObject.getString("password"); }
      catch (Exception JSONObject){password=null;}
      id = firstObject.getString("id");
-     status = firstObject.getInt("status");
-     type = firstObject.getInt("type");
+     status = firstObject.get("status").toString();
+     type = firstObject.get("type").toString();
 
      try{firstName1 = secondObject.getString("firstName");}
      catch (Exception JSONObject){firstName1=null;}
@@ -46,8 +46,8 @@ public boolean compareDocumentsArrays(JSONArray firstArray, JSONArray secondArra
      try{password1 = secondObject.getString("password"); }
      catch (Exception JSONObject){password1=null;}
      id1 = secondObject.getString("id");
-     status1 = secondObject.getInt("status");
-     type1 = secondObject.getInt("type");
+     status1 = secondObject.get("status").toString();
+     type1 = secondObject.get("type").toString();
 
 
        if((firstName1==null && firstName=="") || (firstName==null && firstName1=="") || (firstName==null && firstName1==null)){

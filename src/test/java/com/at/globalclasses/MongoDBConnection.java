@@ -1,3 +1,4 @@
+
 package com.at.globalclasses;
 
 import com.mongodb.MongoClient;
@@ -10,8 +11,7 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import com.google.gson.Gson;
-import org.openqa.selenium.json.Json;
+
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -21,8 +21,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static com.mongodb.client.model.Projections.fields;
-import static com.mongodb.client.model.Projections.include;
+import static com.mongodb.client.model.Projections.*;
 import static java.lang.Integer.parseInt;
 
 public class MongoDBConnection {
@@ -162,6 +161,15 @@ public class MongoDBConnection {
 
     }
 
+
+
+    public boolean compareAll(String mongoJson, String object) {
+        boolean bool = false;
+        if (mongoJson.equals(object)) {
+            bool = true;
+        }
+        return bool;
+    }
     public JSONArray allUsersInfo(String collection) {
 
         String firstName="",lastName="",email="",password="";
@@ -173,47 +181,47 @@ public class MongoDBConnection {
 
         JSONArray usersMongoArray = new JSONArray();
 
-       for (Document document : findIterable) {
+        for (Document document : findIterable) {
 
-           firstName=null;
-           lastName=null;
-           email=null;
-           password=null;
-           JSONObject mongo = new JSONObject(document.toJson());
-           JSONObject jsonMongo = new JSONObject();
+            firstName=null;
+            lastName=null;
+            email=null;
+            password=null;
+            JSONObject mongo = new JSONObject(document.toJson());
+            JSONObject jsonMongo = new JSONObject();
 
-           String id = mongo.getJSONObject("_id").get("$oid").toString();
-           jsonMongo.put("id",id);
-           if (mongo.has("type")) {
-               type = mongo.getInt("type");
-           }
-           jsonMongo.put("type",type);
-           if (mongo.has("firstName")) {
-           firstName = mongo.getString("firstName");
-           }
-           jsonMongo.put("firstName",firstName);
-           if (mongo.has("lastName")) {
-               lastName = mongo.getString("lastName");
-           }
-           jsonMongo.put("lastName",lastName);
-           if (mongo.has("email")) {
+            String id = mongo.getJSONObject("_id").get("$oid").toString();
+            jsonMongo.put("id",id);
+            if (mongo.has("type")) {
+                type = mongo.getInt("type");
+            }
+            jsonMongo.put("type",type);
+            if (mongo.has("firstName")) {
+                firstName = mongo.getString("firstName");
+            }
+            jsonMongo.put("firstName",firstName);
+            if (mongo.has("lastName")) {
+                lastName = mongo.getString("lastName");
+            }
+            jsonMongo.put("lastName",lastName);
+            if (mongo.has("email")) {
                 email = mongo.getString("email");
-           }
-           jsonMongo.put("email",email);
-           if (mongo.has("password")) {
+            }
+            jsonMongo.put("email",email);
+            if (mongo.has("password")) {
                 password = mongo.getString("password");
-           }
-           jsonMongo.put("password",password);
-           if (mongo.has("status")) {
+            }
+            jsonMongo.put("password",password);
+            if (mongo.has("status")) {
                 status = mongo.getInt("status");
-           }
-           jsonMongo.put("status",status);
+            }
+            jsonMongo.put("status",status);
 
-           usersMongoArray.put(jsonMongo);
+            usersMongoArray.put(jsonMongo);
 
-                  }
+        }
 
-           return usersMongoArray;
+        return usersMongoArray;
 
     }
 
@@ -227,11 +235,27 @@ public class MongoDBConnection {
 
     }
 
-    public boolean compareAll(String mongoJson, String object) {
-        boolean bool = false;
-        if (mongoJson.equals(object)) {
-            bool = true;
+    public String getJsonFromDatabase(String collection,String email) {
+
+        String jsonString = "";
+
+        MongoCollection<Document> coll = mDataBase.getCollection(collection);
+        FindIterable<Document> findIterable = coll.find(Filters.eq("email", email)).projection(fields(include("email","password"), excludeId()));
+
+        try {
+            for (Document doc : findIterable) {
+                JSONObject monObject = new JSONObject(doc.toJson());
+                jsonString = monObject.toString();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return bool;
+
+        return jsonString;
+
     }
 }
+
+
+
+
