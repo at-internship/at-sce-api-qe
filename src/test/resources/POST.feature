@@ -1,24 +1,24 @@
 @Post
 
-Feature: POST operation for authenticate an user
+Feature: POST operation to create and authenticate a user
 
   Background:
     Given I am working on "QA" environment
     And I am targeting "at-sce-api" service
     And I have access to "at-sce-db" database
-    
+
 
   @US_015 @1
   Scenario: Authenticate a user with a register  email and register password in database
     Given I have the following information for  authenticate a user:
       | email     | ing.alexbolio@gmail.com |
       | password  | V4p0r30n                |
-    And   I build my request body with information shown above  
+    And   I build my request body with information shown above
     And   I am targeting endpoint for "authenticate_users"
     When  I send a POST request
     Then  The status code should be "200"
-    And I have acces to the database "at-sce-db"
-    
+    And I have access to the database at-sce-db
+
 
 
   @US_015 @2
@@ -26,42 +26,42 @@ Feature: POST operation for authenticate an user
     Given I have the following information for  authenticate a user:
       | email     | kevin@agilethouhgt.com |
       | password  |                        |
-    And   I build my request body with information shown above  
+    And   I build my request body with information shown above
     And   I am targeting endpoint for "authenticate_users"
     When  I send a POST request
     Then  The status code should be "200"
-    And I have acces to the database "at-sce-db"
-    
+    And I have access to the database at-sce-db
+
   @US_015 @3
   Scenario: Fail Authentication with a not register  email and a register password in database
     Given I have the following information for  authenticate a user:
       | email     | pruebas@gmail.com |
       | password  | V4p0r30n          |
-    And   I build my request body with information shown above  
+    And   I build my request body with information shown above
     And   I am targeting endpoint for "authenticate_users"
     When  I send a POST request
     Then  The status code should be "401"
-    And   There is not match with any value in DB "at-sce-db"
+    And   There is not match with any value in DB at-sce-db
 
-    
+
   @US_015 @4
   Scenario: Fail Authentication  with a not register  email and a not register password in database
     Given I have the following information for  authenticate a user:
       | email     | pruebas@gmail.com |
       | password  | pruebas           |
-    And   I build my request body with information shown above  
+    And   I build my request body with information shown above
     And   I am targeting endpoint for "authenticate_users"
     When  I send a POST request
     Then  The status code should be "401"
-		And   There is not match with any value in DB "at-sce-db"
+    And   There is not match with any value in DB at-sce-db
 
-    
+
   @US_015 @5
   Scenario: Fail Authentication  with a null email and a null password
     Given I have the following information for  authenticate a user:
       | email     |  |
       | password  |  |
-    And   I build my request body with information shown above  
+    And   I build my request body with information shown above
     And   I am targeting endpoint for "authenticate_users"
     When  I send a POST request
     Then  The status code should be "500"
@@ -70,8 +70,8 @@ Feature: POST operation for authenticate an user
   @US_018 @1
   Scenario: Send all correct data to create a User
     Given I have the following information for new user and build a request body:
-      | type      | 5                      |
-      | firstName | Mario                  |
+      | type      | 1                      |
+      | firstName | Guillermina            |
       | lastName  | Ahumada                |
       | email     | mario@agilethought.com |
       | password  | computer123            |
@@ -97,7 +97,7 @@ Feature: POST operation for authenticate an user
 
   @US_018 @3
   Scenario: Send a null in the type field with all the other data in the other fields being correct
-    Given I have the following information for a new user and build a request body:
+    Given I have the following information for a new user and build a request body for a null:
       | type      |                              |
       | firstName | Migue                        |
       | lastName  | Olmos                        |
@@ -120,12 +120,12 @@ Feature: POST operation for authenticate an user
       | status    | 0                       |
     And   I am targeting endpoint for "create_users"
     When  I send a POST request
-    Then  The status code should be "400"
+    Then  The status code should be "200"
     And Information retrieved from Post service should match with DB collection "users"
 
   @US_018  @5
   Scenario: Send a null in the type field with all the other data in the other fields being correct
-    Given I have the following information for new user and build a request body:
+    Given I have the following information for a new user and build a request body for a null:
       | type      | 3                       |
       | firstName |                         |
       | lastName  | Doriga                  |
@@ -153,7 +153,7 @@ Feature: POST operation for authenticate an user
 
   @US_018 @7
   Scenario: Send a null in the lastName field with all the other data in the other fields being correct
-    Given I have the following information for new user and build a request body:
+    Given I have the following information for a new user and build a request body for a null:
       | type      | 1                          |
       | firstName | Ana                        |
       | lastName  |                            |
@@ -181,7 +181,7 @@ Feature: POST operation for authenticate an user
 
   @US_018 @9
   Scenario: Send a null in the email field with all the other data in the other fields being correct
-    Given I have the following information for new user and build a request body:
+    Given I have the following information for a new user and build a request body for a null:
       | type      | 8        |
       | firstName | Bryan    |
       | lastName  | Garza    |
@@ -209,7 +209,7 @@ Feature: POST operation for authenticate an user
 
   @US_018 @11
   Scenario: Send a null in the password field with all the other data in the other fields being correct
-    Given I have the following information for new user and build a request body:
+    Given I have the following information for a new user and build a request body for a null:
       | type      | 1                       |
       | firstName | Amelia                  |
       | lastName  | Escareno                |
@@ -237,7 +237,7 @@ Feature: POST operation for authenticate an user
 
   @US_018 @13
   Scenario: Send a null in the status field with all the other data in the other fields being correct
-    Given I have the following information for a new user and build a request body:
+    Given I have the following information for a new user and build a request body for a null:
       | type      | 5                       |
       | firstName | Karina                  |
       | lastName  | Delgado                 |
@@ -248,6 +248,5 @@ Feature: POST operation for authenticate an user
     When  I send a POST request
     Then  The status code should be "201"
     And Information retrieved from Post service should match with DB collection "users"
-
 
     

@@ -26,11 +26,6 @@ public class Get {
         base.ServiceApi = new ApiTools(base.environment,service);
     }
 
-    @Given("I have access to {string} database")
-    public void i_have_access_to_database(String dataBase) throws Exception {
-        base.dataBase = dataBase;
-    }
-
     @Given("I want to retrieve all users")
     public void i_want_to_retrieve_all_users() throws Exception{
         base.apiResource= ApiPaths.SCE_GET_USERS;
