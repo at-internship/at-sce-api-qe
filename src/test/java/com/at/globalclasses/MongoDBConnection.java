@@ -161,8 +161,6 @@ public class MongoDBConnection {
 
     }
 
-
-
     public boolean compareAll(String mongoJson, String object) {
         boolean bool = false;
         if (mongoJson.equals(object)) {
@@ -170,6 +168,7 @@ public class MongoDBConnection {
         }
         return bool;
     }
+
     public JSONArray allUsersInfo(String collection) {
 
         String firstName="",lastName="",email="",password="";

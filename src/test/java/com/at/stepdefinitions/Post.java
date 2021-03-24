@@ -128,11 +128,17 @@ public class Post {
     }
 
     @And("I have the {string} body response")
-    public void i_Have_The_Body_Response(String body) {
+    public void i_Have_The_Body_Response(String body) throws Exception {
 
         if(body.equals("correct")){
             JSONObject correctResponse = new JSONObject(base.ServiceApi.response.getBody());
-            Assert.assertEquals(userRequest.getEmail(),correctResponse.get("email"));
+            String id = correctResponse.getString("id");
+
+            MongoDBUtils userDB = new MongoDBUtils();
+            JSONObject userToCompare = new JSONObject(userDB.getJObjectByID(base.environment,base.uridb,"users",id));
+
+
+            Assert.assertEquals(userRequest.getEmail(),userToCompare.getString("email"));
         }
         if(body.equals("failure")){
             JSONObject failureResponse = new JSONObject(base.ServiceApi.response.getBody());
@@ -144,7 +150,29 @@ public class Post {
 
 
     }
-    
 
+    @Given("I want to login a user with the status {string}")
+    public void i_Want_To_Login_A_User_With_The_Status(String status) throws Exception {
+    MongoDBUtils randomUser = new MongoDBUtils();
+    String actualStatus;
+        if(status.equals("available")) {
+            do {
+                String id = randomUser.getRandomID(base.environment, base.uridb, "users");
+                JSONObject userData = new JSONObject(randomUser.getJObjectByID(base.environment, base.uridb, "users", id));
+                userRequest.setEmail(userData.getString("email"));
+                userRequest.setPassword(userData.getString("password"));
+                actualStatus = userData.get("status").toString();
+            } while (!actualStatus.equals("1"));
+        }
+        if(status.equals("unavailable")){
+            do {
+                String id = randomUser.getRandomID(base.environment, base.uridb, "users");
+                JSONObject userData = new JSONObject(randomUser.getJObjectByID(base.environment, base.uridb, "users", id));
+                userRequest.setEmail(userData.getString("email"));
+                userRequest.setPassword(userData.getString("password"));
+                actualStatus = userData.get("status").toString();
+            } while (!actualStatus.equals("0"));
 
+        }
+    }
 }

@@ -247,9 +247,7 @@ Feature: POST operation for authenticate an user
 
   @US_027 @1
   Scenario: Login an existing user with the correct password and status available.
-    Given I want to login a user with the next information:
-      | email     | diana.arceo@agilethought.com |
-      | password  | dian@1234                    |
+    Given I want to login a user with the status "available"
     And   I build my request body with information shown above
     And   I am targeting endpoint for "authenticate_users"
     When  I send a POST request
@@ -291,9 +289,7 @@ Feature: POST operation for authenticate an user
 
   @US_027 @5
   Scenario: Login an existing user with the correct password but with status unavailable.
-    Given I want to login a user with the next information:
-      | email     | alejandr@agilethought.com |
-      | password  |      memonaso             |
+    Given I want to login a user with the status "unavailable"
     And   I build my request body with information shown above
     And   I am targeting endpoint for "authenticate_users"
     When  I send a POST request
