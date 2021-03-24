@@ -1,9 +1,6 @@
 package com.at.stepdefinitions;
 
-import com.at.globalclasses.ApiPaths;
-import com.at.globalclasses.ApiTools;
-import com.at.globalclasses.BasicSecurityUtil;
-import com.at.globalclasses.MongoDBUtils;
+import com.at.globalclasses.*;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -76,8 +73,9 @@ public class Get {
         JSONArray dbHistoryArray;
         dbHistoryArray = mongo.arrayHistoryInfoDB(base.environment, base.dataBase, "histories", base.id);
 
+        QAUtils qaUtils = new QAUtils();
         JSONArray getHistoryArray = new JSONArray(base.response.getBody());
-        Assert.assertTrue(mongo.compareHistoriesDocumentsArrays(dbHistoryArray, getHistoryArray));
+        Assert.assertTrue(qaUtils.compareHistoriesDocumentsArrays(dbHistoryArray, getHistoryArray));
     }
 
     @Then("The number of registered histories should be {int}")
@@ -93,9 +91,10 @@ public class Get {
         MongoDBUtils mongo = new MongoDBUtils();
         JSONArray dbHistoryArray;
         dbHistoryArray = mongo.arrayHistoryInfoDB(base.environment, base.dataBase, "histories", base.id);
-        JSONArray getHistoryArray = new JSONArray(base.response.getBody());
 
-        Assert.assertFalse(mongo.compareHistoriesDocumentsArrays(dbHistoryArray, getHistoryArray));
+        QAUtils qaUtils = new QAUtils();
+        JSONArray getHistoryArray = new JSONArray(base.response.getBody());
+        Assert.assertFalse(qaUtils.compareHistoriesDocumentsArrays(dbHistoryArray, getHistoryArray));
     }
 
 }
