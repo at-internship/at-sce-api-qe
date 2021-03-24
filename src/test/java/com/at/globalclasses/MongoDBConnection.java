@@ -8,6 +8,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
+
 import static com.mongodb.client.model.Projections.*;
 
 import cucumber.deps.com.thoughtworks.xstream.converters.reflection.FieldKeySorter;
@@ -24,7 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-
+import static java.lang.Integer.getInteger;
 import static java.lang.Integer.parseInt;
 
 
@@ -130,7 +131,7 @@ public class MongoDBConnection {
 
     public boolean compareJsonString(String collection, String object) {
         boolean bool = false;
-        String data = "", category = "", title = "", description = "", img="";
+        String data = "", category = "", title = "", description = "", img = "";
         String status = "";
 
         MongoCollection<Document> coll = mDataBase.getCollection(collection);
@@ -139,7 +140,7 @@ public class MongoDBConnection {
         for (Document document : findIterable) {
             JSONObject mongo = new JSONObject(document.toJson());
             String id = mongo.getJSONObject("_id").get("$oid").toString();
-            String[] categoryList = { "JAVA", "PEGA", "JS" };
+            String[] categoryList = {"JAVA", "PEGA", "JS"};
             if (mongo.has("category")) {
                 category = categoryList[parseInt(mongo.get("category").toString()) - 1];
             }
@@ -165,6 +166,7 @@ public class MongoDBConnection {
         return bool;
 
     }
+
     public boolean compareAll(String mongoJson, String object) {
         boolean bool = false;
         if (mongoJson.equals(object)) {
@@ -172,15 +174,15 @@ public class MongoDBConnection {
         }
         return bool;
     }
-    
-    
-    public String getJsonFromDatabase(String collection,String email) {
-        
+
+
+    public String getJsonFromDatabase(String collection, String email) {
+
         String jsonString = "";
-        
+
         MongoCollection<Document> coll = mDataBase.getCollection(collection);
-        FindIterable<Document> findIterable = coll.find(Filters.eq("email", email)).projection(fields(include("email","password"), excludeId()));
-                
+        FindIterable<Document> findIterable = coll.find(Filters.eq("email", email)).projection(fields(include("email", "password"), excludeId()));
+
         try {
             for (Document doc : findIterable) {
                 JSONObject monObject = new JSONObject(doc.toJson());
@@ -189,12 +191,153 @@ public class MongoDBConnection {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
-		return jsonString;
-            
+
+        return jsonString;
+
     }
-    
-    
-    
-    
+
+    public long collectionSizeWithUserId(String collection, String id) {
+        long number = 0;
+
+        MongoCollection<Document> coll = mDataBase.getCollection(collection);
+        FindIterable<Document> findIterable = coll.find(Filters.eq("user_id", id)).projection(fields(include("user_id")));
+
+        for (Document doc : findIterable) {
+            number = number + 1;
+        }
+        return number;
+    }
+
+    public JSONArray allHistoryInfo(String collection, String idUser) {
+
+        String user_id = "";
+        String type = "", totalHours = "", totalDays = "";
+        boolean status = false;
+        String costDay = "", costHour = "", projectCost = "", taxIVA = "", taxISR_r = "", taxIVA_r = "", revenue = "", total = "";
+        String rent, transport, internet, feed, others, totalFixedExpenses;
+
+        MongoCollection<Document> coll = mDataBase.getCollection(collection);
+        FindIterable<Document> findIterable = coll.find(Filters.eq("user_id", idUser));
+
+        JSONArray usersMongoArray = new JSONArray();
+
+        for (Document document : findIterable) {
+
+            user_id = null;
+            JSONObject mongo = new JSONObject(document.toJson());
+            JSONObject jsonMongo = new JSONObject();
+
+            String id = mongo.getJSONObject("_id").get("$oid").toString();
+            jsonMongo.put("id", id);
+            if (mongo.has("type")) {
+                type = mongo.get("type").toString();
+            }
+            jsonMongo.put("type", type);
+
+            if (mongo.has("totalHours")) {
+                totalHours = mongo.get("totalHours").toString();
+            }
+            jsonMongo.put("totalHours", totalHours);
+
+            if (mongo.has("totalDays")) {
+                totalDays = mongo.get("totalDays").toString();
+            }
+            jsonMongo.put("totalDays", totalDays);
+
+            if (mongo.has("user_id")) {
+                user_id = mongo.get("user_id").toString();
+            }
+            jsonMongo.put("user_id", user_id);
+
+            if (mongo.has("costDay")) {
+                costDay = mongo.get("costDay").toString();
+            }
+            jsonMongo.put("costDay", costDay);
+
+            if (mongo.has("costHour")) {
+                costHour = mongo.get("costHour").toString();
+            }
+            jsonMongo.put("costHour", costHour);
+
+            if (mongo.has("projectCost")) {
+                projectCost = mongo.get("projectCost").toString();
+            }
+            jsonMongo.put("projectCost", projectCost);
+
+            if (mongo.has("taxIVA")) {
+                taxIVA = mongo.get("taxIVA").toString();
+            }
+            jsonMongo.put("taxIVA", taxIVA);
+
+            if (mongo.has("taxISR_r")) {
+                taxISR_r = mongo.get("taxISR_r").toString();
+            }
+            jsonMongo.put("taxISR_r", taxISR_r);
+
+            if (mongo.has("taxIVA_r")) {
+                taxIVA_r = mongo.get("taxIVA_r").toString();
+            }
+            jsonMongo.put("taxIVA_r", taxIVA_r);
+
+            if (mongo.has("revenue")) {
+                revenue = mongo.get("revenue").toString();
+            }
+            jsonMongo.put("revenue", revenue);
+
+            if (mongo.has("total")) {
+                total = mongo.get("total").toString();
+            }
+            jsonMongo.put("total", total);
+
+            if (mongo.has("status")) {
+                status = mongo.getBoolean("status");
+            }
+            jsonMongo.put("status", status);
+            try {
+                rent = mongo.getJSONObject("fixedExpenses").get("rent").toString();
+            } catch (Exception e) {
+                rent = "";
+            }
+            jsonMongo.put("rent", rent);
+
+            try {
+                transport = mongo.getJSONObject("fixedExpenses").get("transport").toString();
+            } catch (Exception e) {
+                transport = "";
+            }
+            jsonMongo.put("transport", transport);
+
+            try {
+                internet = mongo.getJSONObject("fixedExpenses").get("internet").toString();
+            } catch (Exception e) {
+                internet = "";
+            }
+            jsonMongo.put("internet", internet);
+
+            try {
+                feed = mongo.getJSONObject("fixedExpenses").get("feed").toString();
+            } catch (Exception e) {
+                feed = "";
+            }
+            jsonMongo.put("feed", feed);
+
+            try {
+                others = mongo.getJSONObject("fixedExpenses").get("others").toString();
+            } catch (Exception e) {
+                others = "";
+            }
+            jsonMongo.put("others", others);
+
+            try {
+                totalFixedExpenses = mongo.getJSONObject("fixedExpenses").get("total").toString();
+            } catch (Exception e) {
+                totalFixedExpenses = "";
+            }
+            jsonMongo.put("totalFixedExpenses", totalFixedExpenses);
+
+
+            usersMongoArray.put(jsonMongo);
+        }
+        return usersMongoArray;
+    }
 }

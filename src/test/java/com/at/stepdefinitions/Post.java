@@ -112,7 +112,7 @@ public class Post {
         String collectionBody = mongo.obtainObject(base.environment, base.dataBase, collection, base.response.getBody());
         JSONObject jsonResponse = new JSONObject(collectionBody);
 
-        boolean bool = mongo.compareDocuments(jsonRequest,jsonResponse);
+        boolean bool = mongo.compareUsersDocuments(jsonRequest,jsonResponse);
         Assert.assertTrue(bool);
 
         JSONObject json = new JSONObject(base.response.getBody());
