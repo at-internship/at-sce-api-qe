@@ -193,8 +193,28 @@ public class MongoDBConnection {
 		return jsonString;
             
     }
-    
-    
-    
-    
+
+    public String getId(String collection,String email) {
+        String jsonString = "";
+
+        MongoCollection<Document> coll = mDataBase.getCollection(collection);
+        FindIterable<Document> findIterable = coll.find(Filters.eq("email", email));
+
+        try {
+            for (Document doc : findIterable) {
+                JSONObject mongo = new JSONObject(doc.toJson());
+                jsonString = mongo.getJSONObject("_id").get("$oid").toString();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return jsonString;
+
+    }
+
+
+
+
+
 }

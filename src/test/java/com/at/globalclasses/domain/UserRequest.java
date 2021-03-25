@@ -1,5 +1,6 @@
 package com.at.globalclasses.domain;
 
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -7,7 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserRequest {
 
-	private String email;
-	private String password;
-		
+	private String  type;
+	private String  firstName;
+	private String  lastName;
+	private String  email;
+	private String  password;
+	private String  status;
+
 }
