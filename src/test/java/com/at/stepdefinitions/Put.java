@@ -150,4 +150,12 @@ public class Put {
         String expectedResult = json.getString("id");
         Assert.assertEquals(expectedResult, jsonCollection.getJSONObject("_id").get("$oid").toString());
     }
+
+    @Then("Information from response body should match with error {string} message")
+    public void information_from_response_body_should_match_with_error_not_found_message(String error){
+        JSONObject json = new JSONObject(Objects.requireNonNull(base.response.getBody()));
+        String errorMessage= json.getString("error");
+        Assert.assertEquals(errorMessage,error);
+    }
+
 }

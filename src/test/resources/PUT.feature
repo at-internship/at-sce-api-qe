@@ -1,12 +1,12 @@
 @Put
 Feature: send users values to updating a specific user by id
 
-  Background: 
+  Background:
     Given I am working on "QA" environment
     And I am targeting "at-sce-api" service
     And I have access to "at-sce-db" database
 
-  @US_020 
+  @US_020
   Scenario: User data is not changed in the database, value sent in lastName is int
     Given I get the id of a new user
     And I have the following information to update user by id and build a request body:
@@ -20,7 +20,7 @@ Feature: send users values to updating a specific user by id
     And I am targeting endpoint for "updating_users"
     And I send a PUT request
     Then The status code of the result should be "400"
-    And Information from response body should match with DB collection "users"
+    And Information from response body should match with error "Bad Request" message
 
   @US_020 @7
   Scenario: User data is not changed in the database, value sent in email is int
@@ -36,7 +36,7 @@ Feature: send users values to updating a specific user by id
     And I am targeting endpoint for "updating_users"
     And I send a PUT request
     Then The status code of the result should be "400"
-    And Information from response body should match with DB collection "users"
+    And Information from response body should match with error "Bad Request" message
 
   @US_020 @8
   Scenario: User data is not changed in the database, value sent in password is int
@@ -52,7 +52,7 @@ Feature: send users values to updating a specific user by id
     And I am targeting endpoint for "updating_users"
     And I send a PUT request
     Then The status code of the result should be "400"
-    And Information from response body should match with DB collection "users"
+    And Information from response body should match with error "Bad Request" message
 
   @US_020 @9
   Scenario: User is changed in the database with number in string format in the status field
@@ -69,7 +69,7 @@ Feature: send users values to updating a specific user by id
     Then The status code of the result should be "200"
     And Information from response body should match with DB collection "users"
 
-  @US_020 
+  @US_020
   Scenario: User data is changed in the database, email can be null
     Given I get the id of a new user
     And I have the following information to update user by id and build a request body:
@@ -99,7 +99,7 @@ Feature: send users values to updating a specific user by id
     Then The status code of the result should be "200"
     And Information from response body should match with DB collection "users"
 
-  @US_020 
+  @US_020
   Scenario: User data is changed in the database, status can be null
     Given I get the id of a new user
     And I have the following information to update user by id and build a request body:
@@ -127,6 +127,7 @@ Feature: send users values to updating a specific user by id
     And I am targeting endpoint for "updating_users"
     When I send a PUT request
     Then The status code should be "404"
+    And Information from response body should match with error "Not Found" message
 
   @US_020 @3
   Scenario: Some of the values didn't change when trying to update them
@@ -140,9 +141,10 @@ Feature: send users values to updating a specific user by id
     And I am targeting endpoint for "updating_users"
     When I send a PUT request
     Then The status code should be "400"
-    
-@US_020 @1 
-  Scenario: User is update correctly 
+    And Information from response body should match with error "Bad Request" message
+
+@US_020 @1
+  Scenario: User is update correctly
     Given I get the id of a new user
     And I have the following information to update user by id and build a request body:
       | type      | 2                      |
@@ -154,8 +156,8 @@ Feature: send users values to updating a specific user by id
     And I am targeting endpoint for "updating_users"
     When I send a PUT request
     Then The status code of the result should be "200"
-    
-  @US_020 @4 
+
+  @US_020 @4
   Scenario: User data is not changed in the database, value sent is a string in the type field
     Given I get the id of a new user
     And I have the following information to update user by id and build a request body:
@@ -168,8 +170,9 @@ Feature: send users values to updating a specific user by id
     And I am targeting endpoint for "updating_users"
     When I send a PUT request
     Then The status code of the result should be "400"
+    And Information from response body should match with error "Bad Request" message
 
-  @US_020 @5 
+  @US_020 @5
   Scenario: User data is not changed in the database,firstName has an incorrect data type
     Given I get the id of a new user
     And I have the following information to update user by id and build a request body:
@@ -182,9 +185,9 @@ Feature: send users values to updating a specific user by id
     And I am targeting endpoint for "updating_users"
     When I send a PUT request
     Then The status code of the result should be "400"
-    And Information from response body should match with DB collection "users"
+    And Information from response body should match with error "Bad Request" message
 
-  @US_020 @10 
+  @US_020 @10
   Scenario: User data is changed in the database, value sent is a null in the type field
     Given I get the id of a new user
     And I have the following information to update user by id and build a request body:
@@ -199,7 +202,7 @@ Feature: send users values to updating a specific user by id
     Then The status code of the result should be "200"
     And Information from response body should match with DB collection "users"
 
-  @US_020 @11 
+  @US_020 @11
   Scenario: User data is changed in the database, value sent is a null in the firstName field
     Given I get the id of a new user
     And I have the following information to update user by id and build a request body:
