@@ -18,8 +18,6 @@ Feature: POST operation for authenticate an user
     When  I send a POST request
     Then  The status code should be "200"
     And I have acces to the database "at-sce-db"
-    
-
 
   @US_015 @2
   Scenario: Authenticate a user with a register  email and null password in database
@@ -43,7 +41,6 @@ Feature: POST operation for authenticate an user
     Then  The status code should be "401"
     And   There is not match with any value in DB "at-sce-db"
 
-    
   @US_015 @4
   Scenario: Fail Authentication  with a not register  email and a not register password in database
     Given I have the following information for  authenticate a user:
@@ -55,7 +52,6 @@ Feature: POST operation for authenticate an user
     Then  The status code should be "401"
 		And   There is not match with any value in DB "at-sce-db"
 
-    
   @US_015 @5
   Scenario: Fail Authentication  with a null email and a null password
     Given I have the following information for  authenticate a user:
@@ -65,7 +61,6 @@ Feature: POST operation for authenticate an user
     And   I am targeting endpoint for "authenticate_users"
     When  I send a POST request
     Then  The status code should be "500"
-
 
   @US_018 @1
   Scenario: Send all correct data to create a User
@@ -248,6 +243,69 @@ Feature: POST operation for authenticate an user
     When  I send a POST request
     Then  The status code should be "201"
     And Information retrieved from Post service should match with DB collection "users"
+
+
+  @US_027 @1
+  Scenario: Login an existing user with the correct password and status available.
+    Given I want to login a user with the status "available"
+    And   I build my request body with information shown above
+    And   I am targeting endpoint for "authenticate_users"
+    When  I send a POST request
+    Then  The status code should be "200"
+    And   I have the "correct" body response
+
+  @US_027 @2
+  Scenario: Login an user with the email field = null.
+    Given I want to login a user with the next information:
+      | email     |                         |
+      | password  |     flavio123           |
+    And   I build my request body with information shown above
+    And   I am targeting endpoint for "authenticate_users"
+    When  I send a POST request
+    Then  The status code should be "401"
+    And   I have the "failure" body response
+
+  @US_027 @3
+  Scenario: Login an existing user with the status available but with a wrong password.
+    Given I want to login a user with the next information:
+      | email     | admin@agilethought.com  |
+      | password  |  wrongpwd               |
+    And   I build my request body with information shown above
+    And   I am targeting endpoint for "authenticate_users"
+    When  I send a POST request
+    Then  The status code should be "401"
+    And   I have the "failure" body response
+
+  @US_027 @4
+  Scenario: Login an existing user with the status available but with the password = null.
+    Given I want to login a user with the next information:
+      | email     | diana.arceo@agilethought.com |
+      | password  |                              |
+    And   I build my request body with information shown above
+    And   I am targeting endpoint for "authenticate_users"
+    When  I send a POST request
+    Then  The status code should be "401"
+    And   I have the "failure" body response
+
+  @US_027 @5
+  Scenario: Login an existing user with the correct password but with status unavailable.
+    Given I want to login a user with the status "unavailable"
+    And   I build my request body with information shown above
+    And   I am targeting endpoint for "authenticate_users"
+    When  I send a POST request
+    Then  The status code should be "401"
+    And   I have the "failure" body response
+
+  @US_027 @6
+  Scenario: Login a non-existing user.
+    Given I want to login a user with the next information:
+      | email     | thisemaildoesntexist@gmail.com |
+      | password  |         12345                  |
+    And   I build my request body with information shown above
+    And   I am targeting endpoint for "authenticate_users"
+    When  I send a POST request
+    Then  The status code should be "401"
+    And   I have the "failure" body response
 
 
     

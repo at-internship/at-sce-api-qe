@@ -13,8 +13,16 @@
         <cucumber.version>6.0.0</cucumber.version>
         <maven.compiler.version>3.8.1</maven.compiler.version>
     </properties>
-
     <dependencies>
+
+    <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>4.5.11</version>
+        <scope>test</scope>
+    </dependency>
+
+
         <dependency>
             <groupId>com.github.javafaker</groupId>
             <artifactId>javafaker</artifactId>
@@ -192,5 +200,6 @@
             </plugin>
         </plugins>
     </build>
+
 
 </project>
