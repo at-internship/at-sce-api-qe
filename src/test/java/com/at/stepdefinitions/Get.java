@@ -12,6 +12,7 @@ import org.junit.Assert;
 public class Get {
     private BasicSecurityUtil base;
     long numberUsers;
+    long numberHistories;
 
     public Get(BasicSecurityUtil base, BasicSecurityUtil basedb) {
         this.base = base;
@@ -129,5 +130,55 @@ public class Get {
         Assert.assertTrue(bool);
         System.out.println("The values of all users match.");
     }
-}
 
+    @Given("I want to retrieve the histories that correspond to this id {string}")
+    public void the_user_that_corresponds_to_this_id_has_histories(String id) {
+        base.id = id;
+    }
+
+    @When("I send a GET request to get the histories")
+    public void i_send_a_GET_request_to_get_the_histories() {
+        base.response = base.ServiceApi.retrieve(base.ServiceApi.hostName + base.apiResource + base.id);
+    }
+
+    @Then("The number of registered histories should be the same of retrieved histories")
+    public void the_number_of_registered_histories_should_be_the_same_of_retrieved_histories() {
+        MongoDBUtils mongo = new MongoDBUtils();
+        numberHistories = mongo.numberOfHistoriesDB(base.environment, base.uridb, "histories", base.id);
+
+        JSONArray historiesGet = new JSONArray(base.response.getBody());
+
+        Assert.assertEquals(historiesGet.length(), numberHistories);
+    }
+
+    @Then("Information retrieved from service should match with DB collection histories")
+    public void information_retrieved_from_service_should_match_with_DB_collection_histories() {
+        MongoDBUtils mongo = new MongoDBUtils();
+        JSONArray dbHistoryArray;
+        dbHistoryArray = mongo.arrayHistoryInfoDB(base.environment, base.uridb, "histories", base.id);
+
+        QAUtils qaUtils = new QAUtils();
+        JSONArray getHistoryArray = new JSONArray(base.response.getBody());
+        Assert.assertTrue(qaUtils.compareHistoriesDocumentsArrays(dbHistoryArray, getHistoryArray));
+    }
+
+    @Then("The number of registered histories should be {int}")
+    public void the_number_of_registered_histories_should_be(int histories) {
+        MongoDBUtils mongo = new MongoDBUtils();
+        numberHistories = mongo.numberOfHistoriesDB(base.environment, base.uridb, "histories", base.id);
+
+        Assert.assertEquals(histories, numberHistories);
+    }
+
+    @Then("Information retrieved from get histories should be an empty list")
+    public void information_retrieved_from_get_histories_should_be_an_empty_list() {
+        MongoDBUtils mongo = new MongoDBUtils();
+        JSONArray dbHistoryArray;
+        dbHistoryArray = mongo.arrayHistoryInfoDB(base.environment, base.uridb, "histories", base.id);
+
+        QAUtils qaUtils = new QAUtils();
+        JSONArray getHistoryArray = new JSONArray(base.response.getBody());
+        Assert.assertFalse(qaUtils.compareHistoriesDocumentsArrays(dbHistoryArray, getHistoryArray));
+    }
+
+}
