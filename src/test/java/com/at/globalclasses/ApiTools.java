@@ -1,3 +1,4 @@
+
 package com.at.globalclasses;
 
 import java.io.FileNotFoundException;
@@ -185,5 +186,6 @@ public class ApiTools {
         }
         return prop.getProperty(property);
     }
+
 
 }

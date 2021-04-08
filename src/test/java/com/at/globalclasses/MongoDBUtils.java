@@ -38,7 +38,6 @@ public class MongoDBUtils {
         return bool;
     }
 
-    
     public static String compareJsonFromDatabase(String env, String mDataBase, String collection,String email) {
         MongoDBConnection db = new MongoDBConnection(env, mDataBase);
         String jsonFronDatabase;
@@ -46,7 +45,6 @@ public class MongoDBUtils {
         db.close();
         return jsonFronDatabase;
     }
-
 
     public static String obtainObject(String env, String mDataBase, String collection, String responseId) {
         MongoDBConnection db = new MongoDBConnection(env, mDataBase);
@@ -131,15 +129,6 @@ public class MongoDBUtils {
 
         return bool;
     }
-
-    public static String getIdFromCollection(String env, String mDataBase, String collection,String email) {
-        MongoDBConnection db = new MongoDBConnection(env, mDataBase);
-        String jsonFronDatabase;
-        jsonFronDatabase = db.getId(collection, email);
-        db.close();
-        return jsonFronDatabase;
-    }
-
     
     
 }
