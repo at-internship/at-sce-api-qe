@@ -1,78 +1,91 @@
 package com.at.stepdefinitions;
 
 import com.at.globalclasses.*;
+import com.at.globalclasses.domain.FixedERequest;
+import com.at.globalclasses.domain.HistoriesRequest;
+import com.at.globalclasses.domain.QARandomData;
 import com.at.globalclasses.domain.UserRequest;
 import com.google.gson.Gson;
 
 import gherkin.deps.com.google.gson.JsonParser;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.json.JSONObject;
 import org.junit.Assert;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.util.Map;
 
 public class Post {
     private BasicSecurityUtil base;
-    
-    private UserRequest userRequest =  new UserRequest();
+
+    private UserRequest userRequest = new UserRequest();
+    private HistoriesRequest historyData = new HistoriesRequest();
+    private FixedERequest fixedExpenses = new FixedERequest();
+    private boolean statusValue = true;
+    JSONObject historyJson;
+    JSONObject fixedExpensesJson;
+    QARandomData randomCategory = new QARandomData();
+
 
     public Post(BasicSecurityUtil base) {
         this.base = base;
     }
-    
-        
-   
+
+
     @Given("I have the following information for  authenticate a user:")
-    public void i_have_the_following_information_for_authenticate_a_user(Map<String, String> dataTable) throws Exception{
-    	userRequest.setEmail(dataTable.get("email"));
-    	userRequest.setPassword(dataTable.get("password"));
+    public void i_have_the_following_information_for_authenticate_a_user(Map<String, String> dataTable) throws Exception {
+        userRequest.setEmail(dataTable.get("email"));
+        userRequest.setPassword(dataTable.get("password"));
     }
 
     @Given("I build my request body with information shown above")
     public void i_build_my_request_body_with_information_shown_above() {
-        Gson gson =  new Gson();
+        Gson gson = new Gson();
         base.requestBody = gson.toJson(userRequest);
     }
+
     @Given("I am targeting endpoint for {string}")
     public void i_am_targeting_endpoint_for(String apiPath) {
-        for(ApiPath a: ApiPath.values()) {
-        	if(a.name().equals(apiPath)) {
-        		base.apiResource = a.getApiPath();
-        	}
+        for (ApiPath a : ApiPath.values()) {
+            if (a.name().equals(apiPath)) {
+                base.apiResource = a.getApiPath();
+            }
         }
     }
+
     @When("I send a POST request")
     public void i_send_a_POST_request() {
-    	base.response= base.ServiceApi.POSTMethod(base.ServiceApi.hostName, base.apiResource, base.requestBody);
+        base.response = base.ServiceApi.POSTMethod(base.ServiceApi.hostName, base.apiResource, base.requestBody);
     }
-    
+
     @Then("The status code should be {string}")
     public void the_status_code_should_be(String statusCode) {
         int status = Integer.parseInt(statusCode);
         Assert.assertEquals(status, base.ServiceApi.response.getStatusCode().value());
     }
 
-    
+
     @Given("I have acces to the database {string}")
     public void i_have_acces_to_the_database(String database) {
-    	MongoDBUtils compare =  new MongoDBUtils();
-    	String jsonFromDatabase;
-    	jsonFromDatabase = compare.compareJsonFromDatabase(base.environment, base.dataBase, "users",userRequest.getEmail());
-    	JsonParser parser = new JsonParser();    	
-    	Assert.assertEquals(parser.parse(jsonFromDatabase),parser.parse(base.requestBody));
+        MongoDBUtils compare = new MongoDBUtils();
+        String jsonFromDatabase;
+        jsonFromDatabase = compare.compareJsonFromDatabase(base.environment, base.dataBase, "users", userRequest.getEmail());
+        JsonParser parser = new JsonParser();
+        Assert.assertEquals(parser.parse(jsonFromDatabase), parser.parse(base.requestBody));
     }
-    
 
-    	@Then("There is not match with any value in DB {string}")
-    	public void there_is_not_match_with_any_value_in_DB(String database) {
-        	MongoDBUtils compare =  new MongoDBUtils();
-        	String jsonFromDatabase;
-        	jsonFromDatabase = compare.compareJsonFromDatabase(base.environment, base.dataBase, "users",userRequest.getEmail());
-        	Assert.assertEquals("",jsonFromDatabase);
-    	}
+
+    @Then("There is not match with any value in DB {string}")
+    public void there_is_not_match_with_any_value_in_DB(String database) {
+        MongoDBUtils compare = new MongoDBUtils();
+        String jsonFromDatabase;
+        jsonFromDatabase = compare.compareJsonFromDatabase(base.environment, base.dataBase, "users", userRequest.getEmail());
+        Assert.assertEquals("", jsonFromDatabase);
+    }
 
     @Given("I have the following information for new user and build a request body:")
     public void i_have_the_following_information_for_new_user(Map<String, String> userTable) throws Exception {
@@ -92,7 +105,7 @@ public class Post {
     }
 
     @Given("I have the following information for a new user and build a request body:")
-    public void i_have_the_following_information_for_a_new_user_and_build_a_request_body(Map<String,String> userTable) throws Exception {
+    public void i_have_the_following_information_for_a_new_user_and_build_a_request_body(Map<String, String> userTable) throws Exception {
         //for null values
         JSONObject jsonBodyRequest = new JSONObject();
         jsonBodyRequest.put("type", userTable.get("type"));
@@ -113,7 +126,7 @@ public class Post {
         String collectionBody = mongo.obtainObject(base.environment, base.dataBase, collection, base.response.getBody());
         JSONObject jsonResponse = new JSONObject(collectionBody);
 
-        boolean bool = mongo.compareDocuments(jsonRequest,jsonResponse);
+        boolean bool = mongo.compareDocuments(jsonRequest, jsonResponse);
         Assert.assertTrue(bool);
 
         JSONObject json = new JSONObject(base.response.getBody());
@@ -122,7 +135,7 @@ public class Post {
     }
 
     @Given("I want to login a user with the next information:")
-    public void i_Want_To_Login_A_User_With_The_Next_Information(Map<String, String> dataTable) throws Exception{
+    public void i_Want_To_Login_A_User_With_The_Next_Information(Map<String, String> dataTable) throws Exception {
         userRequest.setEmail(dataTable.get("email"));
         userRequest.setPassword(dataTable.get("password"));
     }
@@ -130,22 +143,22 @@ public class Post {
     @And("I have the {string} body response")
     public void i_Have_The_Body_Response(String body) throws Exception {
 
-        if(body.equals("correct")){
+        if (body.equals("correct")) {
             JSONObject correctResponse = new JSONObject(base.ServiceApi.response.getBody());
             String id = correctResponse.getString("id");
 
             MongoDBUtils userDB = new MongoDBUtils();
-            JSONObject userToCompare = new JSONObject(userDB.getJObjectByID(base.environment,base.uridb,"users",id));
+            JSONObject userToCompare = new JSONObject(userDB.getJObjectByID(base.environment, base.uridb, "users", id));
 
 
-            Assert.assertEquals(userRequest.getEmail(),userToCompare.getString("email"));
+            Assert.assertEquals(userRequest.getEmail(), userToCompare.getString("email"));
         }
-        if(body.equals("failure")){
+        if (body.equals("failure")) {
             JSONObject failureResponse = new JSONObject(base.ServiceApi.response.getBody());
             Assert.assertNotNull(failureResponse.get("timestamp"));
-            Assert.assertEquals("Unauthorized",failureResponse.get("error"));
-            Assert.assertEquals("Unauthorized",failureResponse.get("message"));
-            Assert.assertEquals("/api/v1/login",failureResponse.get("path"));
+            Assert.assertEquals("Unauthorized", failureResponse.get("error"));
+            Assert.assertEquals("Unauthorized", failureResponse.get("message"));
+            Assert.assertEquals("/api/v1/login", failureResponse.get("path"));
         }
 
 
@@ -153,9 +166,9 @@ public class Post {
 
     @Given("I want to login a user with the status {string}")
     public void i_Want_To_Login_A_User_With_The_Status(String status) throws Exception {
-    MongoDBUtils randomUser = new MongoDBUtils();
-    String actualStatus;
-        if(status.equals("available")) {
+        MongoDBUtils randomUser = new MongoDBUtils();
+        String actualStatus;
+        if (status.equals("available")) {
             do {
                 String id = randomUser.getRandomID(base.environment, base.uridb, "users");
                 JSONObject userData = new JSONObject(randomUser.getJObjectByID(base.environment, base.uridb, "users", id));
@@ -164,7 +177,7 @@ public class Post {
                 actualStatus = userData.get("status").toString();
             } while (!actualStatus.equals("1"));
         }
-        if(status.equals("unavailable")){
+        if (status.equals("unavailable")) {
             do {
                 String id = randomUser.getRandomID(base.environment, base.uridb, "users");
                 JSONObject userData = new JSONObject(randomUser.getJObjectByID(base.environment, base.uridb, "users", id));
@@ -174,5 +187,88 @@ public class Post {
             } while (!actualStatus.equals("0"));
 
         }
+    }
+
+    @Before("@US_030")
+    public void create_body_for_a_new_history() {
+
+        historyData.setType(randomCategory.correctRangeInt(1, 4));
+        historyData.setCostDay(randomCategory.positiveDouble());
+        historyData.setCostHour(randomCategory.positiveDouble());
+        historyData.setProjectCost(randomCategory.positiveDouble());
+        historyData.setRevenue(randomCategory.positiveDouble());
+        historyData.setStatus(randomCategory.correctRangeInt(0, 1));
+        historyData.setTaxISR_r(randomCategory.positiveDouble());
+        historyData.setTaxIVA(randomCategory.positiveDouble());
+        historyData.setTaxIVA_r(randomCategory.positiveDouble());
+        historyData.setTotal(randomCategory.positiveDouble());
+        historyData.setTotalDays(randomCategory.positiveInt());
+        historyData.setTotalHours(randomCategory.positiveInt());
+        historyData.setUser_id(randomCategory.randomString());
+        historyJson = new JSONObject(historyData);
+        fixedExpenses.setTotal(randomCategory.positiveDouble());
+        fixedExpenses.setFeed(randomCategory.positiveDouble());
+        fixedExpenses.setInternet(randomCategory.positiveDouble());
+        fixedExpenses.setOthers(randomCategory.positiveDouble());
+        fixedExpenses.setRent(randomCategory.positiveDouble());
+        fixedExpenses.setTransport(randomCategory.positiveDouble());
+        fixedExpensesJson = new JSONObject(fixedExpenses);
+
+    }
+
+    @Given("I want to create a new history with {string} {string}")
+    public void i_Want_To_Create_A_New_History_With(String field, String data) {
+        QAUtils qaUtils = new QAUtils();
+        MongoDBUtils randomUser = new MongoDBUtils();
+        if (field.equals("status") && data.equals("null")) {
+            statusValue = false;
+        }
+        historyData.setUser_id(randomUser.getRandomID(base.environment, base.uridb, "users"));
+        historyJson.put("user_id", historyData.getUser_id());
+        historyJson = qaUtils.fillHistoryBody(field, data, historyJson);
+
+    }
+
+    @And("I have the fixed expenses with {string} {string}")
+    public void i_Have_The_Fixed_Expenses_With(String field, String data) {
+        QAUtils qaUtils = new QAUtils();
+        fixedExpensesJson = qaUtils.fillFixExpBody(field, data, fixedExpensesJson);
+
+    }
+
+    @And("I build my request body with the information of the history")
+    public void i_Build_My_Request_Body_With_The_Information_Of_The_History() {
+        historyJson.put("fixedExpenses", fixedExpensesJson);
+        base.requestBody = historyJson.toString();
+
+    }
+
+    @And("The history created match with the history in the data base")
+    public void the_History_Created_Match_With_The_History_In_The_Data_Base() {
+        MongoDBUtils mongo = new MongoDBUtils();
+        JSONObject idJson = new JSONObject(base.response.getBody());
+        QAUtils qaUtils = new QAUtils();
+        base.id = idJson.getString("id");
+        String dbBody = mongo.obtainObject(base.environment, base.uridb, "histories", idJson.toString());
+
+        JSONObject jsonHistoryDB = new JSONObject(dbBody);
+        String expectedId = jsonHistoryDB.getJSONObject("_id").get("$oid").toString();
+        jsonHistoryDB = qaUtils.modifiedJsonHistory(jsonHistoryDB);
+
+        Assert.assertEquals(base.id, expectedId);
+        JSONAssert.assertEquals(historyJson, jsonHistoryDB, statusValue);
+
+    }
+
+    @And("I have the incorrect body response for the history")
+    public void i_Have_The_Incorrect_Body_Response_For_The_History() {
+        JSONObject failureResponse = new JSONObject(base.response.getBody());
+        QAUtils validation = new QAUtils();
+
+        Assert.assertTrue(validation.validateRegex(validation.getTimestamp(), failureResponse.get("timestamp").toString()));
+        Assert.assertEquals("Bad Request", failureResponse.get("error"));
+        Assert.assertEquals("400",failureResponse.get("status").toString());
+        Assert.assertTrue(validation.validateRegex("JSON parse error", failureResponse.get("message").toString()) || validation.validateRegex("The field", failureResponse.get("message").toString()) || validation.validateRegex("The status", failureResponse.get("message").toString()));
+        Assert.assertEquals("/api/v1/histories", failureResponse.get("path"));
     }
 }

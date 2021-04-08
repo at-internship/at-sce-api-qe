@@ -307,5 +307,346 @@ Feature: POST operation for authenticate an user
     Then  The status code should be "401"
     And   I have the "failure" body response
 
+  @US_030 @1
+  Scenario: Create a new history with all fields filled with the correct data.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "201"
+    And   The history created match with the history in the data base
+  @US_030 @2
+  Scenario: Create a new history with all fields filled with the correct data and status as null.
+    Given I want to create a new history with "status" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "201"
+    And   The history created match with the history in the data base
+  @US_030 @3
+  Scenario: Create a new history with type having a null value.
+    Given I want to create a new history with "type" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @4
+  Scenario: Create a new history with type having an invalid data.
+    Given I want to create a new history with "type" "invalid"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @5
+  Scenario: Create a new history with user having a null value.
+    Given I want to create a new history with "user" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
 
-    
+  @US_030 @6
+  Scenario: Create a new history with status having an invalid data.
+    Given I want to create a new history with "status" "invalid"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @7
+  Scenario: Create a new history with rent from Fixed Expenses having a null value.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "rent" "null"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @8
+  Scenario: Create a new history with rent from Fixed Expenses having an invalid data.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "rent" "invalid"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @9
+  Scenario: Create a new history with transport from Fixed Expenses having a null value.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "transport" "null"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @10
+  Scenario: Create a new history with transport from Fixed Expenses having an invalid data.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "transport" "invalid"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @11
+  Scenario: Create a new history with internet from Fixed Expenses having a null value.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "internet" "null"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @12
+  Scenario: Create a new history with internet from Fixed Expenses having an invalid data.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "internet" "invalid"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @13
+  Scenario: Create a new history with feed from Fixed Expenses having a null value.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "feed" "null"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @14
+  Scenario: Create a new history with feed from Fixed Expenses having an invalid data.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "feed" "invalid"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @15
+  Scenario: Create a new history with others from Fixed Expenses having a null value.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "others" "null"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @16
+  Scenario: Create a new history with others from Fixed Expenses having an invalid data.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "others" "invalid"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @17
+  Scenario: Create a new history with total from Fixed Expenses having a null value.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "total" "null"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @18
+  Scenario: Create a new history with total from Fixed Expenses having an invalid data.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "total" "invalid"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @19
+  Scenario: Create a new history with totalHours having a null value.
+    Given I want to create a new history with "totalHours" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @20
+  Scenario: Create a new history with totalHours having an invalid data.
+    Given I want to create a new history with "totalHours" "invalid"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @21
+  Scenario: Create a new history with totalDays having a null value.
+    Given I want to create a new history with "totalDays" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @22
+  Scenario: Create a new history with totalDays having an invalid data.
+    Given I want to create a new history with "totalDays" "invalid"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @23
+  Scenario: Create a new history with costDay having a null value.
+    Given I want to create a new history with "costDay" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @24
+  Scenario: Create a new history with costDay having an invalid data.
+    Given I want to create a new history with "costDay" "invalid"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @25
+  Scenario: Create a new history with costHour having a null value.
+    Given I want to create a new history with "costHour" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @26
+  Scenario: Create a new history with costHour having an invalid data.
+    Given I want to create a new history with "costHour" "invalid"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @27
+  Scenario: Create a new history with projectCost having a null value.
+    Given I want to create a new history with "projectCost" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @28
+  Scenario: Create a new history with projectCost having an invalid data.
+    Given I want to create a new history with "projectCost" "invalid"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @29
+  Scenario: Create a new history with taxIVA having a null value.
+    Given I want to create a new history with "taxIVA" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @30
+  Scenario: Create a new history with taxIVA having an invalid data.
+    Given I want to create a new history with "taxIVA" "invalid"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @31
+  Scenario: Create a new history with taxISR_r having a null value.
+    Given I want to create a new history with "taxISR_r" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @32
+  Scenario: Create a new history with taxISR_r having an invalid data.
+    Given I want to create a new history with "taxISR_r" "invalid"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @33
+  Scenario: Create a new history with taxIVA_r having a null value.
+    Given I want to create a new history with "taxIVA_r" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @34
+  Scenario: Create a new history with taxIVA_r having an invalid data.
+    Given I want to create a new history with "taxIVA_r" "invalid"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @35
+  Scenario: Create a new history with total having a null value.
+    Given I want to create a new history with "total" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @36
+  Scenario: Create a new history with total having an invalid data.
+    Given I want to create a new history with "total" "invalid"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @37
+  Scenario: Create a new history with revenue having a null value.
+    Given I want to create a new history with "revenue" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history
+  @US_030 @38
+  Scenario: Create a new history with revenue having an invalid data.
+    Given I want to create a new history with "revenue" "invalid"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the incorrect body response for the history

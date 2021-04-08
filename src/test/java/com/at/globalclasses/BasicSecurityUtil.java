@@ -10,6 +10,6 @@ public class BasicSecurityUtil {
     public String type, uridb;
     public String method;
     public String expectedMessage;
-    public String param;
+    public String param, id;
 }
 
