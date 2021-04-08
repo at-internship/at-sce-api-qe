@@ -316,7 +316,7 @@ Feature: POST operation for authenticate an user
     When  I send a POST request
     Then  The status code should be "201"
     And   The history created match with the history in the data base
-  @US_030 @2
+  @US_030 @2 @Deprecated
   Scenario: Create a new history with all fields filled with the correct data and status as null.
     Given I want to create a new history with "status" "null"
     And   I have the fixed expenses with "correct" "data"
@@ -343,7 +343,7 @@ Feature: POST operation for authenticate an user
     When  I send a POST request
     Then  The status code should be "400"
     And   I have the incorrect body response for the history
-  @US_030 @5
+  @US_030 @5 @Deprecated
   Scenario: Create a new history with user having a null value.
     Given I want to create a new history with "user" "null"
     And   I have the fixed expenses with "correct" "data"
@@ -352,7 +352,6 @@ Feature: POST operation for authenticate an user
     When  I send a POST request
     Then  The status code should be "400"
     And   I have the incorrect body response for the history
-
   @US_030 @6
   Scenario: Create a new history with status having an invalid data.
     Given I want to create a new history with "status" "invalid"
@@ -650,3 +649,4 @@ Feature: POST operation for authenticate an user
     When  I send a POST request
     Then  The status code should be "400"
     And   I have the incorrect body response for the history
+

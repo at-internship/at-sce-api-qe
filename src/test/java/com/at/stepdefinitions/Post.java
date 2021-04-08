@@ -25,7 +25,6 @@ public class Post {
     private UserRequest userRequest = new UserRequest();
     private HistoriesRequest historyData = new HistoriesRequest();
     private FixedERequest fixedExpenses = new FixedERequest();
-    private boolean statusValue = true;
     JSONObject historyJson;
     JSONObject fixedExpensesJson;
     QARandomData randomCategory = new QARandomData();
@@ -206,12 +205,12 @@ public class Post {
         historyData.setTotalHours(randomCategory.positiveInt());
         historyData.setUser_id(randomCategory.randomString());
         historyJson = new JSONObject(historyData);
-        fixedExpenses.setTotal(randomCategory.positiveDouble());
         fixedExpenses.setFeed(randomCategory.positiveDouble());
         fixedExpenses.setInternet(randomCategory.positiveDouble());
         fixedExpenses.setOthers(randomCategory.positiveDouble());
         fixedExpenses.setRent(randomCategory.positiveDouble());
         fixedExpenses.setTransport(randomCategory.positiveDouble());
+        fixedExpenses.setTotal(fixedExpenses.getFeed()+ fixedExpenses.getInternet()+ fixedExpenses.getRent()+ fixedExpenses.getTransport()+ fixedExpenses.getOthers());
         fixedExpensesJson = new JSONObject(fixedExpenses);
 
     }
@@ -220,9 +219,7 @@ public class Post {
     public void i_Want_To_Create_A_New_History_With(String field, String data) {
         QAUtils qaUtils = new QAUtils();
         MongoDBUtils randomUser = new MongoDBUtils();
-        if (field.equals("status") && data.equals("null")) {
-            statusValue = false;
-        }
+
         historyData.setUser_id(randomUser.getRandomID(base.environment, base.uridb, "users"));
         historyJson.put("user_id", historyData.getUser_id());
         historyJson = qaUtils.fillHistoryBody(field, data, historyJson);
@@ -256,7 +253,7 @@ public class Post {
         jsonHistoryDB = qaUtils.modifiedJsonHistory(jsonHistoryDB);
 
         Assert.assertEquals(base.id, expectedId);
-        JSONAssert.assertEquals(historyJson, jsonHistoryDB, statusValue);
+        JSONAssert.assertEquals(historyJson, jsonHistoryDB, false);
 
     }
 
@@ -268,7 +265,10 @@ public class Post {
         Assert.assertTrue(validation.validateRegex(validation.getTimestamp(), failureResponse.get("timestamp").toString()));
         Assert.assertEquals("Bad Request", failureResponse.get("error"));
         Assert.assertEquals("400",failureResponse.get("status").toString());
-        Assert.assertTrue(validation.validateRegex("JSON parse error", failureResponse.get("message").toString()) || validation.validateRegex("The field", failureResponse.get("message").toString()) || validation.validateRegex("The status", failureResponse.get("message").toString()));
+        Assert.assertTrue(validation.validateRegex("JSON parse error", failureResponse.get("message").toString())
+                || validation.validateRegex("Invalid input on field", failureResponse.get("message").toString())
+                || validation.validateRegex("Required field", failureResponse.get("message").toString())
+                || validation.validateRegex("The given id ", failureResponse.get("message").toString()));
         Assert.assertEquals("/api/v1/histories", failureResponse.get("path"));
     }
 }
