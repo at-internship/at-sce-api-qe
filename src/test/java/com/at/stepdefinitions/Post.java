@@ -18,7 +18,6 @@ public class Post {
     private BasicSecurityUtil base;
     
     private UserRequest userRequest =  new UserRequest();
-    public static JSONObject jsonBodyRequest = new JSONObject();
 
     public Post(BasicSecurityUtil base) {
         this.base = base;
@@ -81,6 +80,7 @@ public class Post {
         int typeValue = Integer.parseInt(userTable.get("type"));
         int statusValue = Integer.parseInt(userTable.get("status"));
 
+        JSONObject jsonBodyRequest = new JSONObject();
         jsonBodyRequest.put("type", typeValue);
         jsonBodyRequest.put("firstName", userTable.get("firstName"));
         jsonBodyRequest.put("lastName", userTable.get("lastName"));

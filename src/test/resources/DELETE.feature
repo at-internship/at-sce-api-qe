@@ -10,12 +10,12 @@ Feature: Delete users from database
   @US_021 @1
   Scenario: Create a delete request to remove a user from database using the id generated in database
     Given I am targeting endpoint for "create_users"
-    And I have the following information for new user and build a request body:
-      | type      | 2                      					|
+    And I have the following information for create a new user and build a request body:
+      | type      | 1                      					|
       | firstName | kevin                  					|
       | lastName  | castillo                				|
-      | email     | kevin.castillo@agilethouhgt.com         |
-      | password  | pru3basus21          					|
+      | email     | kevin.castillo@agilethouhgt.com |
+      | password  | CAstill0ro3s          					|
       | status    | 0                      					|
     When I send a POST request
     Then  The status code should be "201"

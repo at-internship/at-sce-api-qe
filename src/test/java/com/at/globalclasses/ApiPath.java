@@ -3,7 +3,7 @@ package com.at.globalclasses;
 public enum ApiPath {
     create_users("/api/v1/users"),
 	authenticate_users("/api/v1/login"),
-    delete_users("/api/v1/users");
+	delete_users("/api/v1/users");
 
     private String apiPath;
 
