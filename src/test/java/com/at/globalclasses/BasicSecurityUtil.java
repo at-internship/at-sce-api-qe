@@ -1,3 +1,4 @@
+
 package com.at.globalclasses;
 
 import org.springframework.http.ResponseEntity;
@@ -11,4 +12,10 @@ public class BasicSecurityUtil {
     public String expectedMessage;
     public String param;
     public String id;
+    public String type, uridb;
+    public String method;
+    public String expectedMessage;
+    public String param;
 }
+
+
