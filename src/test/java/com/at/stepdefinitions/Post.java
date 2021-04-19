@@ -9,13 +9,19 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 
 import java.util.Map;
 
 public class Post {
+
     private BasicSecurityUtil base;
+  	private UserRequest userRequest = new UserRequest();
+	private JSONObject parentData = new JSONObject();
+   	private JSONObject childData = new JSONObject();
     
     private UserRequest userRequest =  new UserRequest();
 
@@ -23,12 +29,11 @@ public class Post {
         this.base = base;
     }
     
-        
-   
     @Given("I have the following information for  authenticate a user:")
-    public void i_have_the_following_information_for_authenticate_a_user(Map<String, String> dataTable) throws Exception{
-    	userRequest.setEmail(dataTable.get("email"));
-    	userRequest.setPassword(dataTable.get("password"));
+    public void i_have_the_following_information_for_authenticate_a_user(Map<String, String> dataTable)
+        throws Exception {
+      userRequest.setEmail(dataTable.get("email"));
+      userRequest.setPassword(dataTable.get("password"));
     }
 
     @Given("I build my request body with information shown above")
@@ -175,4 +180,72 @@ public class Post {
 
         }
     }
+
+  @Given("I have the following parent information for  create  a new history:")
+	public void i_have_the_following_parent_information_for_create_a_new_history(Map<String, Double> parent)
+			throws Exception {
+		parentData.put("_id", parent.get("_id"));
+		parentData.put("type", parent.get("type"));
+		parentData.put("user_id", parent.get("user_id").toString());
+		parentData.put("totalHours", parent.get("totalHours"));
+		parentData.put("totalDays", parent.get("totalDays"));
+		parentData.put("costDay", parent.get("costDay"));
+		parentData.put("costHour", parent.get("costHour"));
+		parentData.put("projectCost", parent.get("projectCost"));
+		parentData.put("taxIVA", parent.get("taxIVA"));
+		parentData.put("taxISR_r", parent.get("taxISR_r"));
+		parentData.put("taxIVA_r", parent.get("taxIVA_r"));
+		parentData.put("total", parent.get("total"));
+		parentData.put("revenue", parent.get("revenue"));
+		parentData.put("status", parent.get("status"));
+	}
+
+	@Given("I have the following fixed expenses for  create  a new history:")
+	public void i_have_the_following_fixed_expenses_for_create_a_new_history(Map<String, Double> expenses)
+			throws Exception {
+
+		childData.put("rent", expenses.get("rent"));
+		childData.put("transport", expenses.get("transport"));
+		childData.put("internet", expenses.get("internet"));
+		childData.put("feed", expenses.get("feed"));
+		childData.put("others", expenses.get("others"));
+		childData.put("total", expenses.get("total"));
+	}
+
+	@Given("I create a request body with the above information")
+	public void i_create_a_request_body_with_the_above_information() {
+
+		try {
+			parentData.put("fixedExpenses", childData);
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		base.requestBody = parentData.toString();
+	}
+
+	@Then("Information retrieved from Post operation should match with the collection {string}")
+	public void information_retrieved_from_Post_operation_should_match_with_the_collection(String collection) {
+		base.collection = collection;
+
+		String response = base.ServiceApi.response.getBody();
+		JSONObject jsonObject = new JSONObject(response);
+
+		MongoDBUtils mongoDBUtils = new MongoDBUtils();
+		String objectFromDatabase = mongoDBUtils.getJObjectByID(base.environment, base.uridb, base.collection,
+				jsonObject.get("id").toString());
+
+		if (parentData.getDouble("status") == 1) {
+			parentData.put("status", true);
+		} else if (parentData.getDouble("status") == 0) {
+			parentData.put("status", false);
+		}
+
+		parentData.remove("_id");
+
+		JsonParser parser = new JsonParser();
+		Assert.assertEquals(parser.parse(parentData.toString()), parser.parse(objectFromDatabase));
+
+	}
 }
