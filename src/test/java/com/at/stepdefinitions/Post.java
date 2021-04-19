@@ -20,7 +20,7 @@ public class Post {
 
     private BasicSecurityUtil base;
   	private UserRequest userRequest = new UserRequest();
-	  private JSONObject parentData = new JSONObject();
+	private JSONObject parentData = new JSONObject();
    	private JSONObject childData = new JSONObject();
     
     private UserRequest userRequest =  new UserRequest();
