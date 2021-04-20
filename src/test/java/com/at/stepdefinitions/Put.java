@@ -33,7 +33,6 @@ public class Put {
     @Before("@US_020 and not @2")
     public void create_body_for_a_new_user(){
         Lorem lorem = LoremIpsum.getInstance();
-        ApiPath a;
         JSONObject jsonBodyRequest = new JSONObject();
         jsonBodyRequest.put("type", 1);
         jsonBodyRequest.put("firstName", lorem.getFirstName().toLowerCase());
