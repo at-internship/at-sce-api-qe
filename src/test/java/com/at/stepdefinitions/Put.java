@@ -40,13 +40,18 @@ public class Put {
         jsonBodyRequest.put("email", lorem.getFirstName().toLowerCase()+"@gmail.com");
         jsonBodyRequest.put("password", lorem.getFirstName().toLowerCase()+"12345678");
         jsonBodyRequest.put("status", 0);
+        
         base.requestBody = jsonBodyRequest.toString();
-        base.apiResource = "/api/v1/users";
+        for(ApiPath a: ApiPath.values()) {
+        	if(a.name().equals("updating_users")) {
+        		base.apiResource = a.getApiPath();
+        	}
+        }
     }
 
     @Given("I get the id of a new user")
     public void i_get_a_id_user_randomly() {
-    	//base.apiResource = "/api/v1/users";
+    	
         base.response= base.ServiceApi.POSTMethod(base.ServiceApi.hostName, base.apiResource, base.requestBody);
         JSONObject json = new JSONObject(base.response.getBody());
         base.id = json.getString("id");
