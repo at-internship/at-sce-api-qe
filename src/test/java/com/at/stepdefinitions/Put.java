@@ -33,6 +33,7 @@ public class Put {
     @Before("@US_020 and not @2")
     public void create_body_for_a_new_user(){
         Lorem lorem = LoremIpsum.getInstance();
+        ApiPath a;
         JSONObject jsonBodyRequest = new JSONObject();
         jsonBodyRequest.put("type", 1);
         jsonBodyRequest.put("firstName", lorem.getFirstName().toLowerCase());
@@ -40,13 +41,8 @@ public class Put {
         jsonBodyRequest.put("email", lorem.getFirstName().toLowerCase()+"@gmail.com");
         jsonBodyRequest.put("password", lorem.getFirstName().toLowerCase()+"12345678");
         jsonBodyRequest.put("status", 0);
-        
         base.requestBody = jsonBodyRequest.toString();
-        for(ApiPath a: ApiPath.values()) {
-        	if(a.name().equals("updating_users")) {
-        		base.apiResource = a.getApiPath();
-        	}
-        }
+        base.apiResource = ApiPath.updating_users.getApiPath();;
     }
 
     @Given("I get the id of a new user")
