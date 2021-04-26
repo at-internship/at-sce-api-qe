@@ -12,5 +12,6 @@ public class BasicSecurityUtil {
     public String expectedMessage;
     public String param;
     public String id;
+
 }
 
