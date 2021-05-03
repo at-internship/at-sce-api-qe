@@ -14,7 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class QAUtils {
     private long numberUsersDB;
-    private String timestamp = "\\d{4}-\\d{2}-\\d{2}\\w\\d{2}:\\d{2}:\\d{2}\\.\\d{3}\\+\\d{2}:\\d{2}";
+    public static String timestamp = "\\d{4}-\\d{2}-\\d{2}\\w\\d{2}:\\d{2}:\\d{2}\\.\\d{3}\\+\\d{2}:\\d{2}";
+    public static String timestampSecondFormat = "\\d{4}-\\d{2}-\\d{2}\\w\\d{2}:\\d{2}:\\d{2}\\.\\d{1}";
     QARandomData randomCategory = new QARandomData();
 
 public boolean compareDocumentsArrays(JSONArray firstArray, JSONArray secondArray){
@@ -132,7 +133,7 @@ public long numberOfUsersDB(String env, String mDataBase, String collection) {
         return number;
     }
 
-public boolean validateRegex(String regex, String stringToValidate){
+public static boolean validateRegex(String regex, String stringToValidate){
     Pattern pattern = Pattern.compile(regex);
     Matcher match = pattern.matcher(stringToValidate);
 
