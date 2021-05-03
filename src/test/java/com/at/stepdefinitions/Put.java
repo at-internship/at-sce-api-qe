@@ -157,5 +157,8 @@ public class Put {
         String errorMessage= json.getString("error");
         Assert.assertEquals(errorMessage,error);
     }
-
+    @When("I Send a PUT request")
+    public void i_Send_a_PUT_request() {
+        base.response = base.ServiceApi.PUTMethod(base.ServiceApi.hostName + base.apiResource, base.requestBody);
+    }
 }

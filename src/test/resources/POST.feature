@@ -3,8 +3,8 @@ Feature: POST operation for authenticate an user
 
   Background: 
     Given I am working on "QA" environment
-    And I am targeting "at-sce-api" service
-    And I have access to "at-sce-db" database
+    And I am targeting "at-sso-api" service
+    And I have access to "at-sso-db" database
 
   @US_015 @1
   Scenario: Authenticate a user with a register  email and register password in database
@@ -226,63 +226,51 @@ Feature: POST operation for authenticate an user
     Then The status code should be "201"
     And Information retrieved from Post service should match with DB collection "users"
 
-  @US_027 @1
+  @US_027 @US_048  @1
   Scenario: Login an existing user with the correct password and status available.
-    Given I want to login a user with the status "available"
-    And I build my request body with information shown above
+    Given I want to login a user with the "correct" "data"
     And I am targeting endpoint for "authenticate_users"
     When I send a POST request
     Then The status code should be "200"
-    And I have the "correct" body response
-  @US_027 @2
+    And   I have the "correct" body response
+  @US_027 @US_048  @2
   Scenario: Login an user with the email field = null.
-    Given I want to login a user with the next information:
-      | email    |           |
-      | password | flavio123 |
-    And I build my request body with information shown above
-    And I am targeting endpoint for "authenticate_users"
-    When I send a POST request
-    Then The status code should be "401"
-    And I have the "failure" body response
-  @US_027 @3
+    Given I want to login a user with the "email" "null"
+    And   I am targeting endpoint for "authenticate_users"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_027 @US_048  @3
   Scenario: Login an existing user with the status available but with a wrong password.
-    Given I want to login a user with the next information:
-      | email    | admin@agilethought.com |
-      | password | wrongpwd               |
-    And I build my request body with information shown above
-    And I am targeting endpoint for "authenticate_users"
-    When I send a POST request
-    Then The status code should be "401"
-    And I have the "failure" body response
-  @US_027 @4
+    Given I want to login a user with the "password" "invalid"
+    And   I am targeting endpoint for "authenticate_users"
+    When  I send a POST request
+    Then  The status code should be "401"
+    And   I have the global error message
+  @US_027 @US_048  @4
   Scenario: Login an existing user with the status available but with the password = null.
-    Given I want to login a user with the next information:
-      | email    | diana.arceo@agilethought.com |
-      | password |                              |
-    And I build my request body with information shown above
-    And I am targeting endpoint for "authenticate_users"
-    When I send a POST request
-    Then The status code should be "401"
-    And I have the "failure" body response
-  @US_027 @5
+    Given I want to login a user with the "password" "null"
+    And   I am targeting endpoint for "authenticate_users"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_027 @US_048  @5
   Scenario: Login an existing user with the correct password but with status unavailable.
-    Given I want to login a user with the status "unavailable"
-    And I build my request body with information shown above
-    And I am targeting endpoint for "authenticate_users"
-    When I send a POST request
-    Then The status code should be "401"
-    And I have the "failure" body response
-  @US_027 @6
+    Given I want to login a user with the "status" "invalid"
+    And   I am targeting endpoint for "authenticate_users"
+    When  I send a POST request
+    Then  The status code should be "401"
+    And   I have the global error message
+  @US_027 @US_048  @6
   Scenario: Login a non-existing user.
     Given I want to login a user with the next information:
-
       | email     | thisemaildoesntexist@gmail.com |
       | password  |         12345                  |
     And   I build my request body with information shown above
     And   I am targeting endpoint for "authenticate_users"
     When  I send a POST request
     Then  The status code should be "401"
-    And   I have the "failure" body response
+    And   I have the global error message
 
   @US_030 @1
   Scenario: Create a new history with all fields filled with the correct data.
@@ -692,4 +680,455 @@ Feature: POST operation for authenticate an user
     When I send a POST request
     Then The status code should be "201"
     And Information retrieved from Post operation should match with the collection "histories"
-    
+
+
+  @US_038 @Create @1
+  Scenario: Create a user with firstName field having a null value
+    Given I have the information to "create" a user with "firstName" "null":
+    And   I am targeting endpoint for "create_users"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @Create @2 @Deprecated
+  Scenario: Create a user with firstName field having an invalid data
+    Given I have the information to "create" a user with "firstName" "invalid":
+    And   I am targeting endpoint for "create_users"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @Create @3 @Deprecated
+  Scenario: Create a user with lastName field having an invalid data
+    Given I have the information to "create" a user with "lastName" "invalid":
+    And   I am targeting endpoint for "create_users"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @Create @4
+  Scenario: Create a user with lastName field having a null value
+    Given I have the information to "create" a user with "lastName" "null":
+    And   I am targeting endpoint for "create_users"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @Create @5
+  Scenario: Create a user with email field having a null value
+    Given I have the information to "create" a user with "email" "null":
+    And   I am targeting endpoint for "create_users"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @Create @6
+  Scenario: Create a user with email field having a repeated email
+    Given I have the information to "create" a user with "email" "repeated":
+    And   I am targeting endpoint for "create_users"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @Create @7
+  Scenario: Create a user with email field having an invalid data
+    Given I have the information to "create" a user with "email" "invalid":
+    And   I am targeting endpoint for "create_users"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @Create @8
+  Scenario: Create a user with password field having an invalid data
+    Given I have the information to "create" a user with "password" "invalid":
+    And   I am targeting endpoint for "create_users"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @Create @9
+  Scenario: Create a user with password field having a null value
+    Given I have the information to "create" a user with "password" "null":
+    And   I am targeting endpoint for "create_users"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @Create @10
+  Scenario: Create a user with status field having an invalid data
+    Given I have the information to "create" a user with "status" "invalid":
+    And   I am targeting endpoint for "create_users"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @Create @11
+  Scenario: Create a user with type field having an invalid data
+    Given I have the information to "create" a user with "type" "invalid":
+    And   I am targeting endpoint for "create_users"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @Create @12
+  Scenario: Create a user with type field having a null value
+    Given I have the information to "create" a user with "type" "null":
+    And   I am targeting endpoint for "create_users"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+
+
+  @US_038 @login @13
+  Scenario: When I try to login a user with email null, I retrieve a global error message.
+    Given I want to login a user with the "email" "null"
+    And   I am targeting endpoint for "authenticate_users"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+
+  @US_038 @login @14
+  Scenario: When I try to login a user with email null, I retrieve a global error message.
+    Given I want to login a user with the "email" "invalid"
+    And   I am targeting endpoint for "authenticate_users"
+    When  I send a POST request
+    Then  The status code should be "401"
+    And   I have the global error message
+
+  @US_038 @login @15
+  Scenario: When I try to login a user with email null, I retrieve a global error message.
+    Given I want to login a user with the "password" "invalid"
+    And   I am targeting endpoint for "authenticate_users"
+    When  I send a POST request
+    Then  The status code should be "401"
+    And   I have the global error message
+
+  @US_038 @login @16
+  Scenario: When I try to login a user with email null, I retrieve a global error message.
+    Given I want to login a user with the "password" "null"
+    And   I am targeting endpoint for "authenticate_users"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+
+  @US_038 @login @17
+  Scenario: When I try to login a user with status invalid, I retrieve a global error message.
+    Given I want to login a user with the "status" "invalid"
+    And   I am targeting endpoint for "authenticate_users"
+    When  I send a POST request
+    Then  The status code should be "401"
+    And   I have the global error message
+
+  @US_038 @35 @histories
+  Scenario: Create a new history with type having a null value.
+    Given I want to create a new history with "type" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @36 @histories
+  Scenario: Create a new history with type having an invalid data.
+    Given I want to create a new history with "type" "invalid"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @37 @histories @Deprecated
+  Scenario: Create a new history with user having a null value.
+    Given I want to create a new history with "user" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @38 @histories
+  Scenario: Create a new history with status having an invalid data.
+    Given I want to create a new history with "status" "invalid"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @39 @histories
+  Scenario: Create a new history with rent from Fixed Expenses having a null value.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "rent" "null"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @40 @histories
+  Scenario: Create a new history with rent from Fixed Expenses having an invalid data.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "rent" "invalid"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @41 @histories
+  Scenario: Create a new history with transport from Fixed Expenses having a null value.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "transport" "null"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @42 @histories
+  Scenario: Create a new history with transport from Fixed Expenses having an invalid data.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "transport" "invalid"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @43 @histories
+  Scenario: Create a new history with internet from Fixed Expenses having a null value.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "internet" "null"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @44 @histories
+  Scenario: Create a new history with internet from Fixed Expenses having an invalid data.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "internet" "invalid"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @45 @histories
+  Scenario: Create a new history with feed from Fixed Expenses having a null value.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "feed" "null"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @46 @histories
+  Scenario: Create a new history with feed from Fixed Expenses having an invalid data.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "feed" "invalid"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @47 @histories
+  Scenario: Create a new history with others from Fixed Expenses having a null value.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "others" "null"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @48 @histories
+  Scenario: Create a new history with others from Fixed Expenses having an invalid data.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "others" "invalid"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @49 @histories
+  Scenario: Create a new history with total from Fixed Expenses having a null value.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "total" "null"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @50 @histories
+  Scenario: Create a new history with total from Fixed Expenses having an invalid data.
+    Given I want to create a new history with "correct" "data"
+    And   I have the fixed expenses with "total" "invalid"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @51 @histories
+  Scenario: Create a new history with totalHours having a null value.
+    Given I want to create a new history with "totalHours" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @52 @histories
+  Scenario: Create a new history with totalHours having an invalid data.
+    Given I want to create a new history with "totalHours" "invalid"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @53 @histories
+  Scenario: Create a new history with totalDays having a null value.
+    Given I want to create a new history with "totalDays" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @54 @histories
+  Scenario: Create a new history with totalDays having an invalid data.
+    Given I want to create a new history with "totalDays" "invalid"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @55 @histories
+  Scenario: Create a new history with costDay having a null value.
+    Given I want to create a new history with "costDay" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @56 @histories
+  Scenario: Create a new history with costDay having an invalid data.
+    Given I want to create a new history with "costDay" "invalid"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @57 @histories
+  Scenario: Create a new history with costHour having a null value.
+    Given I want to create a new history with "costHour" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @58 @histories
+  Scenario: Create a new history with costHour having an invalid data.
+    Given I want to create a new history with "costHour" "invalid"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @59 @histories
+  Scenario: Create a new history with projectCost having a null value.
+    Given I want to create a new history with "projectCost" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @60 @histories
+  Scenario: Create a new history with projectCost having an invalid data.
+    Given I want to create a new history with "projectCost" "invalid"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @61 @histories
+  Scenario: Create a new history with taxIVA having a null value.
+    Given I want to create a new history with "taxIVA" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @62 @histories
+  Scenario: Create a new history with taxIVA having an invalid data.
+    Given I want to create a new history with "taxIVA" "invalid"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @63 @histories
+  Scenario: Create a new history with taxISR_r having a null value.
+    Given I want to create a new history with "taxISR_r" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @64 @histories
+  Scenario: Create a new history with taxISR_r having an invalid data.
+    Given I want to create a new history with "taxISR_r" "invalid"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @65 @histories
+  Scenario: Create a new history with taxIVA_r having a null value.
+    Given I want to create a new history with "taxIVA_r" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @66 @histories
+  Scenario: Create a new history with taxIVA_r having an invalid data.
+    Given I want to create a new history with "taxIVA_r" "invalid"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @67 @histories
+  Scenario: Create a new history with total having a null value.
+    Given I want to create a new history with "total" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @68 @histories
+  Scenario: Create a new history with total having an invalid data.
+    Given I want to create a new history with "total" "invalid"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @69 @histories
+  Scenario: Create a new history with revenue having a null value.
+    Given I want to create a new history with "revenue" "null"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message
+  @US_038 @70 @histories
+  Scenario: Create a new history with revenue having an invalid data.
+    Given I want to create a new history with "revenue" "invalid"
+    And   I have the fixed expenses with "correct" "data"
+    And   I build my request body with the information of the history
+    And   I am targeting endpoint for "create_histories"
+    When  I send a POST request
+    Then  The status code should be "400"
+    And   I have the global error message

@@ -231,3 +231,130 @@ Feature: send users values to updating a specific user by id
     When I send a PUT request
     Then The status code of the result should be "200"
     And Information from response body should match with DB collection "users"
+
+
+  @US_038 @Update @18 @Deprecated
+  Scenario: Update a user with id field having a null value
+    Given I have the information to "update" a user with "id" "null":
+    And   I am targeting endpoint for "updating_users"
+    And I am completing the path
+    When  I Send a PUT request
+    Then  The status code should be "405"
+    And   I have the global error message
+
+  @US_038 @Update @19
+  Scenario: Update a user with id field having an invalid data
+    Given I have the information to "update" a user with "id" "invalid":
+    And   I am targeting endpoint for "updating_users"
+    And I am completing the path
+    When  I Send a PUT request
+    Then  The status code should be "404"
+    And   I have the global error message
+
+  @US_038 @Update @20
+  Scenario: Update a user with firstName field having a null value
+    Given I have the information to "update" a user with "firstName" "null":
+    And   I am targeting endpoint for "updating_users"
+    And I am completing the path
+    When  I Send a PUT request
+    Then  The status code should be "400"
+    And   I have the global error message
+
+  @US_038 @Update @21 @Deprecated
+  Scenario: Update a user with firstName field having an invalid data
+    Given I have the information to "update" a user with "firstName" "invalid":
+    And   I am targeting endpoint for "updating_users"
+    And I am completing the path
+    When  I Send a PUT request
+    Then  The status code should be "400"
+    And   I have the global error message
+
+  @US_038 @Update @22 @Deprecated
+  Scenario: Update a user with lastName field having an invalid data
+    Given I have the information to "update" a user with "lastName" "invalid":
+    And   I am targeting endpoint for "updating_users"
+    And I am completing the path
+    When  I Send a PUT request
+    Then  The status code should be "400"
+    And   I have the global error message
+
+  @US_038 @Update @23
+  Scenario: Update a user with lastName field having a null value
+    Given I have the information to "update" a user with "lastName" "null":
+    And   I am targeting endpoint for "updating_users"
+    And I am completing the path
+    When  I Send a PUT request
+    Then  The status code should be "400"
+    And   I have the global error message
+
+  @US_038 @Update @24
+  Scenario: Update a user with email field having a null value
+    Given I have the information to "update" a user with "email" "null":
+    And   I am targeting endpoint for "updating_users"
+    And I am completing the path
+    When  I Send a PUT request
+    Then  The status code should be "400"
+    And   I have the global error message
+
+  @US_038 @Update @25 @Deprecated
+  Scenario: Update a user with email field having a repeated email
+    Given I have the information to "update" a user with "email" "repeated":
+    And   I am targeting endpoint for "updating_users"
+    And I am completing the path
+    When  I Send a PUT request
+    Then  The status code should be "400"
+    And   I have the global error message
+
+  @US_038 @Update @26
+  Scenario: Update a user with email field having an invalid data
+    Given I have the information to "update" a user with "email" "invalid":
+    And   I am targeting endpoint for "updating_users"
+    And I am completing the path
+    When  I Send a PUT request
+    Then  The status code should be "400"
+    And   I have the global error message
+
+  @US_038 @Update @27
+  Scenario: Update a user with password field having an invalid data
+    Given I have the information to "update" a user with "password" "invalid":
+    And   I am targeting endpoint for "updating_users"
+    And I am completing the path
+    When  I Send a PUT request
+    Then  The status code should be "400"
+    And   I have the global error message
+
+  @US_038 @Update @28
+  Scenario: Update a user with password field having a null value
+    Given I have the information to "update" a user with "password" "null":
+    And   I am targeting endpoint for "updating_users"
+    And I am completing the path
+    When  I Send a PUT request
+    Then  The status code should be "400"
+    And   I have the global error message
+
+  @US_038 @Update @29
+  Scenario: Update a user with status field having an invalid data
+    Given I have the information to "update" a user with "status" "invalid":
+    And   I am targeting endpoint for "updating_users"
+    And I am completing the path
+    When  I Send a PUT request
+    Then  The status code should be "400"
+    And   I have the global error message
+
+  @US_038 @Update @30
+  Scenario: Update a user with type field having an invalid data
+    Given I have the information to "update" a user with "type" "invalid":
+    And   I am targeting endpoint for "updating_users"
+    And I am completing the path
+    When  I Send a PUT request
+    Then  The status code should be "400"
+    And   I have the global error message
+
+  @US_038 @Update @31
+  Scenario: Update a user with type field having a null value
+    Given I have the information to "update" a user with "type" "null":
+    And   I am targeting endpoint for "updating_users"
+    And I am completing the path
+    When  I Send a PUT request
+    Then  The status code should be "400"
+    And   I have the global error message
