@@ -116,6 +116,7 @@ public class MongoDBConnection {
         try {
             JSONArray jResult = new JSONArray();
             JSONObject mObject = new JSONObject();
+
             for (Document doc : findIterable) {
                 jResult.put(mObject = new JSONObject(doc.toJson()));
             }
@@ -125,6 +126,7 @@ public class MongoDBConnection {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return id;
     }
 

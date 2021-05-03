@@ -38,3 +38,12 @@ Scenario: Get the histories of a user
   Then The status code should be "200"
   And The number of registered histories should be 0
   And Information retrieved from get histories should be an empty list
+
+  @US_038 @retrieve @32
+  Scenario: When I try to get a user with an incorrect ID, i retrieve the global error message
+    Given I want to "get" a "invalid" user
+    And   I am targeting endpoint for "get_user"
+    And   I am completing the path
+    When  I send a GET request
+    Then  The status code should be "404"
+    And   I have the global error message

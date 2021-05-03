@@ -4,6 +4,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
+import java.io.File;
+import java.io.FileOutputStream;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.Data;
@@ -14,10 +19,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class QAUtils {
     private long numberUsersDB;
-    private String timestamp = "\\d{4}-\\d{2}-\\d{2}\\w\\d{2}:\\d{2}:\\d{2}\\.\\d{3}\\+\\d{2}:\\d{2}";
+    public static String field, expectedStatus;
+    public static String timestamp = "\\d{4}-\\d{2}-\\d{2}\\w\\d{2}:\\d{2}:\\d{2}\\.\\d{3}\\+\\d{2}:\\d{2}";
+    public static String timestampSecondFormat = "\\d{4}-\\d{2}-\\d{2}\\w\\d{2}:\\d{2}:\\d{2}\\.\\d{1}";
     QARandomData randomCategory = new QARandomData();
 
-public boolean compareDocumentsArrays(JSONArray firstArray, JSONArray secondArray){
+
+public static boolean compareDocumentsArrays(JSONArray firstArray, JSONArray secondArray){
    boolean bool=false;
    int arrayLength = secondArray.length();
    for(long i=0;i<arrayLength;i++){
@@ -119,7 +127,7 @@ public JSONArray arrayUsersInfoDB(String env, String mDataBase, String collectio
         return bool;
     }
 
-public long numberOfUsersDB(String env, String mDataBase, String collection) {
+public static long numberOfUsersDB(String env, String mDataBase, String collection) {
         MongoDBConnection db = new MongoDBConnection(env, mDataBase);
         long number=0;
         try {
@@ -132,7 +140,7 @@ public long numberOfUsersDB(String env, String mDataBase, String collection) {
         return number;
     }
 
-public boolean validateRegex(String regex, String stringToValidate){
+public static boolean validateRegex(String regex, String stringToValidate){
     Pattern pattern = Pattern.compile(regex);
     Matcher match = pattern.matcher(stringToValidate);
 
@@ -149,16 +157,14 @@ public JSONObject fillHistoryBody(String field, String data, JSONObject historyJ
             historyJson.put(field, (Object) null); }
 
         if (data.equals("invalid") && (field != "user")) {
-            switch ((randomCategory.correctRangeInt(1, 3))) {
+            switch ((randomCategory.correctRangeInt(1, 2))) {
                 case 1:
                     historyJson.put(field, randomCategory.negativeInt());
                     break;
                 case 2:
                     historyJson.put(field, randomCategory.negativeDouble());
                     break;
-                case 3:
-                    historyJson.put(field, randomCategory.randomString());
-                    break;
+
 
             }
         }
@@ -172,16 +178,14 @@ public JSONObject fillFixExpBody(String field, String data, JSONObject fixedExpe
         }
 
         if (data.equals("invalid")) {
-            switch ((randomCategory.correctRangeInt(1, 3))) {
+            switch ((randomCategory.correctRangeInt(1, 2))) {
                 case 1:
                     fixedExpensesJson.put(field, randomCategory.negativeInt());
                     break;
                 case 2:
                     fixedExpensesJson.put(field, randomCategory.negativeDouble());
                     break;
-                case 3:
-                    fixedExpensesJson.put(field, randomCategory.randomString());
-                    break;
+
             }
         }
         return fixedExpensesJson;
@@ -205,6 +209,17 @@ public JSONObject modifiedJsonHistory(JSONObject historyJson){
         }
 
         return historyJson;
+    }
+
+public static JSONObject getJUserByStatus(String env, String mDataBase, String collection, String status) {
+        JSONObject userObject;
+        MongoDBUtils mongo = new MongoDBUtils();
+        do {
+          userObject = new JSONObject(mongo.getJObjectByID(env, mDataBase, collection,
+                    mongo.getRandomID(env, mDataBase, collection)));
+        } while (!(userObject.get("status").toString().equals(status)));
+
+        return userObject;
     }
 
 
@@ -584,4 +599,5 @@ public JSONObject modifiedJsonHistory(JSONObject historyJson){
         }
         return bool;
     }
+
 }

@@ -5,8 +5,14 @@ public enum ApiPath {
     authenticate_users("/api/v1/login"),
     create_history("/api/v1/histories"),
     delete_users("/api/v1/users"),
-    updating_users("/api/v1/users/"),
+    create_histories("/api/v1/histories/"),
+    get_user("/api/v1/users"),
+    updating_users("/api/v1/users"),
     get_histories("/api/v1/histories?userid=");
+
+
+
+
 
     private String apiPath;
 

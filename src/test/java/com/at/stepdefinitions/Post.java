@@ -7,6 +7,8 @@ import com.at.globalclasses.domain.QARandomData;
 import com.at.globalclasses.domain.UserRequest;
 import com.google.gson.Gson;
 
+import com.thedeanda.lorem.Lorem;
+import com.thedeanda.lorem.LoremIpsum;
 import gherkin.deps.com.google.gson.JsonParser;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
@@ -14,6 +16,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -29,11 +32,14 @@ public class Post {
     private UserRequest userRequest = new UserRequest();
     private HistoriesRequest historyData = new HistoriesRequest();
     private FixedERequest fixedExpenses = new FixedERequest();
+    private JSONObject parentData = new JSONObject();
+    private JSONObject childData = new JSONObject();
     JSONObject historyJson;
     JSONObject fixedExpensesJson;
+    JSONObject userJson;
+    Lorem lorem = new LoremIpsum().getInstance();
     QARandomData randomCategory = new QARandomData();
-	private JSONObject parentData = new JSONObject();
-   	private JSONObject childData = new JSONObject();
+
 
 
 
@@ -71,6 +77,8 @@ public class Post {
     @Then("The status code should be {string}")
     public void the_status_code_should_be(String statusCode) {
         int status = Integer.parseInt(statusCode);
+
+        QAUtils.expectedStatus = statusCode;
         Assert.assertEquals(status, base.ServiceApi.response.getStatusCode().value());
     }
 
@@ -158,8 +166,7 @@ public class Post {
             MongoDBUtils userDB = new MongoDBUtils();
             JSONObject userToCompare = new JSONObject(userDB.getJObjectByID(base.environment, base.uridb, "users", id));
 
-
-            Assert.assertEquals(userRequest.getEmail(), userToCompare.getString("email"));
+            Assert.assertEquals(userJson.get("email").toString(), userToCompare.getString("email"));
         }
         if (body.equals("failure")) {
             JSONObject failureResponse = new JSONObject(base.ServiceApi.response.getBody());
@@ -198,7 +205,7 @@ public class Post {
     }
 
 
-    @Before("@US_030")
+    @Before("@US_030 or @US_038")
     public void create_body_for_a_new_history() {
 
         historyData.setType(randomCategory.correctRangeInt(1, 4));
@@ -272,7 +279,7 @@ public class Post {
         JSONObject failureResponse = new JSONObject(base.response.getBody());
         QAUtils validation = new QAUtils();
 
-        Assert.assertTrue(validation.validateRegex(validation.getTimestamp(), failureResponse.get("timestamp").toString()));
+        Assert.assertTrue(validation.validateRegex(QAUtils.timestamp, failureResponse.get("timestamp").toString()));
         Assert.assertEquals("Bad Request", failureResponse.get("error"));
         Assert.assertEquals("400",failureResponse.get("status").toString());
         Assert.assertTrue(validation.validateRegex("JSON parse error", failureResponse.get("message").toString())
@@ -349,5 +356,103 @@ public class Post {
 		Assert.assertEquals(parser.parse(parentData.toString()), parser.parse(objectFromDatabase));
 
 	}
+
+/////////////////////////////////////////
+    @Before("@US_038 and @Create or @Update")
+    public void create_body_for_a_new_user() {
+        userRequest.setType(QARandomData.correctRangeInt(1, 2));
+        userRequest.setFirstName(lorem.getFirstName());
+        userRequest.setLastName(lorem.getLastName());
+        userRequest.setEmail(lorem.getEmail());
+        userRequest.setPassword(lorem.getFirstName() + "123456789");
+        userRequest.setStatus(QARandomData.correctRangeInt(0, 1));
+        userJson = new JSONObject(userRequest);
+    }
+
+    @Given("I have the information to {string} a user with {string} {string}:")
+    public void i_have_the_information_to_a_user_with(String operation,String field, String data) {
+        if (operation.equals("update")) {
+            if (field.equals("id")) {
+                if (data.equals("null")) {
+                    base.id = null;
+                }
+                if (data.equals("invalid")) {
+                    base.id = QARandomData.randomString();
+                }
+            } else {
+                base.id = MongoDBUtils.getRandomID(base.environment, base.uridb, "users");
+            }
+        }
+
+        if (data.equals("null")) {
+            userJson.put(field, (Object) null);
+        }
+        if (data.equals("invalid")) {
+            if (field.equals("email") || field.equals("password")) {
+                userJson.put(field, QARandomData.randomString());
+            }
+            if (field.equals("type") || field.equals("status")) {
+                userJson.put(field, QARandomData.negativeInt());
+            }
+        }
+        if (data.equals("repeated")) {
+            String mongoObject;
+
+            base.id = MongoDBUtils.getRandomID(base.environment, base.uridb, "users");
+            mongoObject = MongoDBUtils.getJObjectByID(base.environment, base.uridb, "users", base.id);
+
+            JSONObject userObject = new JSONObject(mongoObject);
+            userJson.put(field, userObject.getString("email"));
+        }
+        base.requestBody = userJson.toString();
+    }
+
+    @Given("I want to login a user with the {string} {string}")
+    public void i_Want_To_Login_A_User_With_The(String field, String data) {
+        QAUtils.field=field;
+        if (field.equals("status")) {
+            userJson = QAUtils.getJUserByStatus(base.environment, base.uridb, "users", "0"); }
+        else {
+         userJson = QAUtils.getJUserByStatus(base.environment,base.uridb,"users","1");
+            if (data.equals("null")) {
+                userJson.put(field, (Object) null); }
+            if(data.equals("invalid")){
+                userJson.put(field,QARandomData.randomString()); }}
+
+        userJson.remove("type");
+        userJson.remove("status");
+        userJson.remove("lastName");
+        userJson.remove("firstName");
+        userJson.remove("_id");
+        userJson.remove("_class");
+
+
+        base.requestBody = userJson.toString();
+
+
+    }
+
+    @And("I have the global error message")
+    public void i_Have_The_Global_Error_Message() {
+
+        JSONObject details;
+        JSONObject failureResponse = new JSONObject(base.response.getBody());
+        try{
+            JSONArray detailsArray = new JSONArray(failureResponse.getJSONArray("details").toString());
+            details = new JSONObject(detailsArray.get(0).toString());}
+        catch(Exception e){ details=null;}
+        Assert.assertTrue(QAUtils.validateRegex(QAUtils.timestampSecondFormat, failureResponse.get("timestamp").toString()));
+        Assert.assertTrue("Bad Request".equals(failureResponse.get("error")) ||
+                "Unauthorized".equals(failureResponse.get("error"))||
+                "Not Found".equals(failureResponse.get("error")));
+        Assert.assertEquals(QAUtils.expectedStatus, failureResponse.get("status").toString());
+        Assert.assertEquals(base.apiResource, failureResponse.get("path"));
+        Assert.assertNotNull( failureResponse.get("message"));
+        if(details!=null){
+            Assert.assertNotNull(details.get("fieldName"));
+            Assert.assertNotNull(details.get("errorMessage"));}
+
+    }
+
 
 }

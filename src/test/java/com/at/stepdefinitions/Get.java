@@ -1,6 +1,11 @@
 package com.at.stepdefinitions;
 
 import com.at.globalclasses.*;
+import com.at.globalclasses.domain.QARandomData;
+import io.cucumber.java.After;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.bs.A;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -51,6 +56,7 @@ public class Get {
     @Then("the status code should be {string}")
     public void the_status_code_should_be(String statusCode) {
         int status = Integer.parseInt(statusCode);
+        QAUtils.expectedStatus = statusCode;
         Assert.assertEquals(status, base.ServiceApi.response.getStatusCode().value());
     }
 
@@ -181,4 +187,44 @@ public class Get {
         Assert.assertFalse(qaUtils.compareHistoriesDocumentsArrays(dbHistoryArray, getHistoryArray));
     }
 
+    @After
+    public void scenarios_Name (Scenario scenario) throws Exception {
+
+      if(ExcelUtils.getFromProperties("config.properties","QA.excel-tag").equals("true")) {
+          ExcelUtils.reportJson.put("Scenario Status", scenario.getStatus().toString());
+          ExcelUtils.reportJson.put("Scenario Name", scenario.getName());
+          try{
+              ExcelUtils.reportJson.put("Request Body", base.requestBody);}
+          catch (Exception e){
+              ExcelUtils.reportJson.put("Response Body", "There is no Request Body");}
+          try{
+          ExcelUtils.reportJson.put("Response Body", base.response.getBody());}
+          catch (Exception e){
+              ExcelUtils.reportJson.put("Response Body", "There is no Response Body");}
+          ExcelUtils.reportJson.put("Expected Status", QAUtils.expectedStatus);
+          ExcelUtils.reportJson.put("Current Status", base.response.getStatusCode().value());
+          ExcelUtils.reportJson.put("Tags", scenario.getSourceTagNames().toString());
+          ExcelUtils.reportJson.put("Path",base.apiResource);
+          ExcelUtils.generateArrayJson(ExcelUtils.reportJson);
+          ExcelUtils.generateExcelReports();
+      }
+    }
+
+    @Given("I want to {string} a {string} user")
+    public void i_Want_To_Get_A_User(String operation, String data) {
+
+        if (data.equals("invalid")) {
+            base.id = QARandomData.randomString();   }
+        else{
+            base.id= null;        } }
+
+
+    @And("I am completing the path")
+    public void i_Am_Completing_The_Path() {
+        if(base.id!=null){
+            base.apiResource = base.apiResource+"/"+base.id;}
+
+
+
+    }
 }

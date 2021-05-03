@@ -33,12 +33,12 @@ public class Delete {
 	@Given("I have the following information for create a new user and build a request body:")
 	public void i_have_the_following_information_for_create_a_new_user_and_build_a_request_body(
 			Map<String, String> userTable) throws Exception {
-		userRequest.setType(userTable.get("type"));
+		userRequest.setType(Integer.parseInt(userTable.get("type")));
 		userRequest.setFirstName(userTable.get("firstName"));
 		userRequest.setLastName(userTable.get("lastName"));
 		userRequest.setEmail(userTable.get("email"));
 		userRequest.setPassword(userTable.get("password"));
-		userRequest.setStatus(userTable.get("status"));
+		userRequest.setStatus(Integer.parseInt(userTable.get("status")));
 
 		Gson gson = new Gson();
 		base.requestBody = gson.toJson(userRequest);
@@ -65,6 +65,7 @@ public class Delete {
 	@Then("the response code should be {string}")
 	public void the_response_code_should_be(String statusCode) {
 		int status = Integer.parseInt(statusCode);
+		QAUtils.expectedStatus=statusCode;
 		Assert.assertEquals(status, base.ServiceApi.response.getStatusCode().value());
 	}
 
@@ -73,4 +74,9 @@ public class Delete {
 		Assert.assertEquals(null, base.response.getBody());
 	}
 
+	@And("I send a DELETE request")
+	public void i_Send_A_DELETE_Request() {
+		System.out.println("HostName:"+base.ServiceApi.hostName );
+		base.response = base.ServiceApi.retrieveDelete(base.ServiceApi.hostName, base.apiResource);
+	}
 }

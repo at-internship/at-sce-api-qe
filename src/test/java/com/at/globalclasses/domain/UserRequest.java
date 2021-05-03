@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserRequest {
 
-	private String  type;
+	private Integer  type;
     private String  firstName;
     private String  lastName;
     private String  email;
     private String  password;
-    private String  status;
+    private Integer  status;
 	
 }
