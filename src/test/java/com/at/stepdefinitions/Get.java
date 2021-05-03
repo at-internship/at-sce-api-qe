@@ -1,6 +1,8 @@
 package com.at.stepdefinitions;
 
 import com.at.globalclasses.*;
+import com.at.globalclasses.domain.QARandomData;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -8,6 +10,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import gherkin.deps.com.google.gson.JsonParser;
 import org.junit.Assert;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 public class Get {
     private BasicSecurityUtil base;
@@ -179,6 +182,51 @@ public class Get {
         QAUtils qaUtils = new QAUtils();
         JSONArray getHistoryArray = new JSONArray(base.response.getBody());
         Assert.assertFalse(qaUtils.compareHistoriesDocumentsArrays(dbHistoryArray, getHistoryArray));
+    }
+
+    @Given("Get operation has a {string} user id")
+    public void get_Operation_Has_A_User_Id(String validation) {
+        if (validation.equals("valid")) {
+            base.id = MongoDBUtils.getRandomID(base.environment, base.uridb, "users");
+        }
+        if (validation.equals("invalid")) {
+
+            base.id = QARandomData.randomString();
+        }
+    }
+
+    @Given("I build my request")
+    public void i_build_my_request() throws Exception {
+        base.apiResource += base.id;
+    }
+
+    @Then("i validate all information retrieved matches with DB data")
+    public void i_validate_all_information_retrieved_matches_with_DB_data() throws Exception {
+        String responseId, collectionId;
+
+        String collectionDoc = MongoDBUtils.obtainObject(base.environment, base.uridb, "users", base.response.getBody());
+        JSONObject JsonCollection = new JSONObject(collectionDoc);
+        JSONObject jsonResponseBody = new JSONObject(base.response.getBody());
+
+        collectionId = JsonCollection.getJSONObject("_id").get("$oid").toString();
+        responseId = jsonResponseBody.getString("id");
+
+        jsonResponseBody.remove("id");
+
+        Assert.assertEquals(responseId, collectionId);
+        JSONAssert.assertEquals(jsonResponseBody, JsonCollection, false);
+    }
+
+    @And("I validate the error matches with the response body")
+    public void i_Validate_The_Error_Matches_With_The_Response_Body() {
+        JSONObject failureResponse = new JSONObject(base.response.getBody());
+
+        Assert.assertTrue(QAUtils.validateRegex(QAUtils.timestampSecondFormat, failureResponse.get("timestamp").toString()));
+        Assert.assertEquals("404", failureResponse.get("status").toString());
+        Assert.assertEquals("Not Found", failureResponse.get("error"));
+        Assert.assertEquals("User was not found with the given id: " + base.id, failureResponse.get("message"));
+        Assert.assertEquals("/api/v1/users/" + base.id, failureResponse.get("path"));
+
     }
 
 }

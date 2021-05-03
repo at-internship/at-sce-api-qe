@@ -56,7 +56,8 @@ public class QARandomData {
         return number;
     }
 
-    public String randomString() {
+    public static String randomString() {
+        Lorem lorem = new LoremIpsum().getInstance();
         String word;
         word = lorem.getWords(1, 1);
         return word;
