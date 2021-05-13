@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class QAUtils {
     private long numberUsersDB;
     private String timestamp = "\\d{4}-\\d{2}-\\d{2}\\w\\d{2}:\\d{2}:\\d{2}\\.\\d{3}\\+\\d{2}:\\d{2}";
+    public static String timestampSecondFormat = "\\d{4}-\\d{2}-\\d{2}\\w\\d{2}:\\d{2}:\\d{2}\\.\\d{1}";
     QARandomData randomCategory = new QARandomData();
 
 public boolean compareDocumentsArrays(JSONArray firstArray, JSONArray secondArray){
@@ -132,7 +133,7 @@ public long numberOfUsersDB(String env, String mDataBase, String collection) {
         return number;
     }
 
-public boolean validateRegex(String regex, String stringToValidate){
+public static boolean validateRegex(String regex, String stringToValidate){
     Pattern pattern = Pattern.compile(regex);
     Matcher match = pattern.matcher(stringToValidate);
 
@@ -224,7 +225,7 @@ public JSONObject modifiedJsonHistory(JSONObject historyJson){
             String id1, user_id1;
             int j = (int) i;
             Double type, type1, totalHours, totalDays, totalHours1, totalDays1;
-            boolean status = false, status1 = false;
+            Integer status = 0, status1= 0 ;
             Double costDay, costHour, projectCost, taxIVA, taxISR_r, taxIVA_r, revenue, total;
             Double costDay1, costHour1, projectCost1, taxIVA1, taxISR_r1, taxIVA_r1, revenue1, total1;
             Double rent, transport, internet, feed, others, totalFixedExpenses;
@@ -258,7 +259,15 @@ public JSONObject modifiedJsonHistory(JSONObject historyJson){
             } catch (Exception JSONObject) {
                 totalDays = null;
             }
-            status = firstObject.getBoolean("status");
+            try{
+                if (firstObject.getBoolean("status"))
+                    status = 1;
+                if (!firstObject.getBoolean("status"))
+                    status = 0;
+            }
+            catch (Exception JSONObject){
+                status =null;
+            }
             try {
                 costDay = firstObject.getDouble("costDay");
             } catch (Exception JSONObject) {
@@ -353,7 +362,15 @@ public JSONObject modifiedJsonHistory(JSONObject historyJson){
             } catch (Exception JSONObject) {
                 totalDays1 = null;
             }
-            status1 = secondObject.getBoolean("status");
+            try{
+                if (secondObject.getInt("status") == 1)
+                    status1 = 1;
+                if (secondObject.getInt("status")==0)
+                    status1 = 0;
+            }
+            catch (Exception JSONObject){
+                status1 =null;
+            }
             try {
                 costDay1 = secondObject.getDouble("costDay");
             } catch (Exception JSONObject) {

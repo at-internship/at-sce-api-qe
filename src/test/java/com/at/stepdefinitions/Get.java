@@ -1,6 +1,8 @@
 package com.at.stepdefinitions;
 
 import com.at.globalclasses.*;
+import com.at.globalclasses.domain.QARandomData;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -180,5 +182,30 @@ public class Get {
         JSONArray getHistoryArray = new JSONArray(base.response.getBody());
         Assert.assertFalse(qaUtils.compareHistoriesDocumentsArrays(dbHistoryArray, getHistoryArray));
     }
+    @Given("I want to retrieve a error message when the user id on the history is {string}")
+    public void i_Want_To_Retrieve_A_Error_Message_When_The_User_Id_On_The_History_Is(String validation) {
+        if (validation.equals("invalid")){
+            base.id = QARandomData.randomString();
+        }
+        if (validation.equals("valid")){
+            base.id = MongoDBUtils.getRandomID(base.environment,base.uridb, "histories");
+            String histories = MongoDBUtils.getJObjectByID(base.environment,base.uridb, "histories",base.id);
+            JSONObject historyJson = new JSONObject(histories);
+            base.id = historyJson.get("user_id").toString();
+            System.out.println(base.id);
+        }
+    }
+
+    @And("I validate that the expected error matches with the response body")
+    public void i_Validate_That_The_Expected_Error_Matches_With_The_Response_Body() {
+        JSONObject failureResponse = new JSONObject(base.response.getBody());
+
+        Assert.assertTrue(QAUtils.validateRegex(QAUtils.timestampSecondFormat, failureResponse.get("timestamp").toString()));
+        Assert.assertEquals("404", failureResponse.get("status").toString());
+        Assert.assertEquals("Not Found", failureResponse.get("error"));
+        Assert.assertEquals("User was not found with the given id: " + base.id, failureResponse.get("message"));
+        Assert.assertEquals("/api/v1/histories" , failureResponse.get("path"));
+    }
+
 
 }
