@@ -5,7 +5,7 @@ import io.cucumber.junit.CucumberOptions;
 import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(plugin = {"pretty","de.monochromata.cucumber.report.PrettyReports:target/cucumber"},
+@CucumberOptions(plugin = {"pretty","html:target/cucumber-html-report", "json:target/cucumber.json"},
         features = {"src/test/resources/"},
         glue = {"com.at.stepdefinitions"},
         tags = "@US_048 and not @Deprecated",
