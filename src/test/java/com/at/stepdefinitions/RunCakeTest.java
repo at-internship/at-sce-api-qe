@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(plugin = {"pretty","de.monochromata.cucumber.report.PrettyReports:target/cucumber",
+        "html:target/cucumber-reports/cucumber.html",
         "json:target/cucumber-reports/cucumber.json"},
         features = {"src/test/resources/"},
         glue = {"com.at.stepdefinitions"},
