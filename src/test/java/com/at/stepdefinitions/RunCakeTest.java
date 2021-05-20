@@ -5,10 +5,12 @@ import io.cucumber.junit.CucumberOptions;
 import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(plugin = {"pretty","de.monochromata.cucumber.report.PrettyReports:target/cucumber"},
+@CucumberOptions(plugin = {"pretty","de.monochromata.cucumber.report.PrettyReports:target/cucumber",
+        "html:target/cucumber-reports/cucumber",
+        "json:target/cucumber-reports/cucumber.json"},
         features = {"src/test/resources/"},
         glue = {"com.at.stepdefinitions"},
-        tags = "@Post and @US_030 and not @Deprecated",
+        tags = "@US_048 and not @Deprecated",
         monochrome = false)
 public class RunCakeTest {
 }

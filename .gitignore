@@ -17,3 +17,4 @@
 
 #Properties files
 *.properties
+/bin/
