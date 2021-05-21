@@ -32,7 +32,7 @@ Feature: Delete
     And I have access to "at-sso-db" database
     When  I use a not existent id
     And I send a delete request
-    Then the response code should be "404"
+    Then the response code should be "401"
 
 
   @US_038 @deleting @33 @Deprecated
