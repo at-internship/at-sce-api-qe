@@ -37,19 +37,21 @@ public class Put {
         jsonBodyRequest.put("type", 1);
         jsonBodyRequest.put("firstName", lorem.getFirstName().toLowerCase());
         jsonBodyRequest.put("lastName", lorem.getLastName().toLowerCase());
-        jsonBodyRequest.put("email", lorem.getFirstName().toLowerCase()+"@gmail.com");
-        jsonBodyRequest.put("password", lorem.getFirstName().toLowerCase()+"12345678");
-        jsonBodyRequest.put("status", 0);
+        jsonBodyRequest.put("email", lorem.getFirstName().toLowerCase()+lorem.getFirstName().toLowerCase()+"@gmail.com");
+        jsonBodyRequest.put("password", lorem.getFirstName()+"12345678");
+        jsonBodyRequest.put("status", 1);
         base.requestBody = jsonBodyRequest.toString();
         base.apiResource = ApiPath.updating_users.getApiPath();;
     }
 
     @Given("I get the id of a new user")
     public void i_get_a_id_user_randomly() {
-    	
+
         base.response= base.ServiceApi.POSTMethod(base.ServiceApi.hostName, base.apiResource, base.requestBody);
+
         JSONObject json = new JSONObject(base.response.getBody());
-        base.id = json.getString("id");
+        System.out.println(base.response);
+        base.id = json.get("id").toString();
     }
 
     @Given("This id doesn't belong to any user {string}")
@@ -102,8 +104,7 @@ public class Put {
 	    JSONObject jsonObject = new JSONObject(base.requestBody);
 	    jsonObject.put("lastName",lastName);
 	    base.requestBody = jsonObject.toString();
-	    System.out.println("Body request: "+base.requestBody);
-	}
+		}
 
 	@And("the value of email is {int}")
 	public void the_value_of_email_is(int email) {
@@ -123,6 +124,7 @@ public class Put {
     @When("I send a PUT request")
     public void i_send_a_PUT_request() {
         base.response = base.ServiceApi.PUTMethod(base.ServiceApi.hostName + base.apiResource + base.id, base.requestBody);
+
     }
 
     @Then("The status code of the result should be {string}")
@@ -136,7 +138,7 @@ public class Put {
         JSONObject jsonResponseBody = new JSONObject(base.response.getBody());
 
         MongoDBUtils mongo = new MongoDBUtils();
-        String collectionBody = mongo.obtainObject(base.environment, base.dataBase, collection, base.response.getBody());
+        String collectionBody = mongo.obtainObject(base.environment, base.uridb, collection, base.response.getBody());
         JSONObject jsonCollection = new JSONObject(collectionBody);
 
         boolean boolDocuments = mongo.compareUsersDocuments(jsonResponseBody, jsonCollection);
@@ -160,5 +162,14 @@ public class Put {
     @When("I Send a PUT request")
     public void i_Send_a_PUT_request() {
         base.response = base.ServiceApi.PUTMethod(base.ServiceApi.hostName + base.apiResource, base.requestBody);
+    }
+
+    @And("the value of email is {string}")
+    public void theValueOfEmailIs(String arg0) {
+        Lorem lorem = LoremIpsum.getInstance();
+        JSONObject jsonObject = new JSONObject(base.requestBody);
+        jsonObject.put("email",lorem.getFirstName().toLowerCase()+lorem.getFirstName().toLowerCase()+"@gmail.com");
+        base.requestBody = jsonObject.toString();
+        System.out.println("Body request: "+base.requestBody);
     }
 }

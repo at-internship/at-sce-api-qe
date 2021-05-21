@@ -77,7 +77,6 @@ public class Post {
     @Then("The status code should be {string}")
     public void the_status_code_should_be(String statusCode) {
         int status = Integer.parseInt(statusCode);
-
         QAUtils.expectedStatus = statusCode;
         Assert.assertEquals(status, base.ServiceApi.response.getStatusCode().value());
     }

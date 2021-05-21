@@ -230,8 +230,7 @@ public static JSONObject getJUserByStatus(String env, String mDataBase, String c
     public void setNumberUsersDB(long numberUsersDB) {
         this.numberUsersDB = numberUsersDB;
     }
-
-        public boolean compareHistoriesDocumentsArrays(JSONArray firstArray, JSONArray secondArray) {
+    public boolean compareHistoriesDocumentsArrays(JSONArray firstArray, JSONArray secondArray) {
         boolean bool = false;
         int arrayLength = secondArray.length();
         for (long i = 0; i < arrayLength; i++) {
@@ -239,7 +238,7 @@ public static JSONObject getJUserByStatus(String env, String mDataBase, String c
             String id1, user_id1;
             int j = (int) i;
             Double type, type1, totalHours, totalDays, totalHours1, totalDays1;
-            boolean status = false, status1 = false;
+            Integer status = 0, status1= 0 ;
             Double costDay, costHour, projectCost, taxIVA, taxISR_r, taxIVA_r, revenue, total;
             Double costDay1, costHour1, projectCost1, taxIVA1, taxISR_r1, taxIVA_r1, revenue1, total1;
             Double rent, transport, internet, feed, others, totalFixedExpenses;
@@ -273,7 +272,15 @@ public static JSONObject getJUserByStatus(String env, String mDataBase, String c
             } catch (Exception JSONObject) {
                 totalDays = null;
             }
-            status = firstObject.getBoolean("status");
+            try{
+                if (firstObject.getBoolean("status"))
+                    status = 1;
+                if (!firstObject.getBoolean("status"))
+                    status = 0;
+            }
+            catch (Exception JSONObject){
+                status =null;
+            }
             try {
                 costDay = firstObject.getDouble("costDay");
             } catch (Exception JSONObject) {
@@ -368,7 +375,15 @@ public static JSONObject getJUserByStatus(String env, String mDataBase, String c
             } catch (Exception JSONObject) {
                 totalDays1 = null;
             }
-            status1 = secondObject.getBoolean("status");
+            try{
+                if (secondObject.getInt("status") == 1)
+                    status1 = 1;
+                if (secondObject.getInt("status")==0)
+                    status1 = 0;
+            }
+            catch (Exception JSONObject){
+                status1 =null;
+            }
             try {
                 costDay1 = secondObject.getDouble("costDay");
             } catch (Exception JSONObject) {
@@ -599,5 +614,4 @@ public static JSONObject getJUserByStatus(String env, String mDataBase, String c
         }
         return bool;
     }
-
 }

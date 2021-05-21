@@ -7,7 +7,7 @@ public enum ApiPath {
     delete_users("/api/v1/users"),
     create_histories("/api/v1/histories/"),
     get_user("/api/v1/users"),
-    updating_users("/api/v1/users"),
+    updating_users("/api/v1/users/"),
     get_histories("/api/v1/histories?userid=");
 
 

@@ -3,8 +3,8 @@ Feature: POST operation for authenticate an user
 
   Background: 
     Given I am working on "QA" environment
-    And I am targeting "at-sso-api" service
-    And I have access to "at-sso-db" database
+    And I am targeting "at-sce-api" service
+    And I have access to "at-sce-db" database
 
   @US_015 @1
   Scenario: Authenticate a user with a register  email and register password in database
@@ -55,6 +55,7 @@ Feature: POST operation for authenticate an user
     And I am targeting endpoint for "authenticate_users"
     When I send a POST request
     Then The status code should be "500"
+
 
   @US_018 @1
   Scenario: Send all correct data to create a User

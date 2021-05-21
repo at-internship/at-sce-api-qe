@@ -1,6 +1,6 @@
 @Get
 
-Feature: Get operation
+Feature: Get
   Background:
     Given I am working on "QA" environment
     And I am targeting "at-sce-api" service
@@ -21,9 +21,9 @@ Feature: Get operation
     And the number of registered users should be 0
     And information retrieved from service should be an empty list
 
-@US_025 @1
+@US_025 @1 @Deprecated
   Scenario: Get the histories of a user
-  Given I want to retrieve the histories that correspond to this id "100"
+  Given I want to retrieve the histories that correspond to this id
   And I am targeting endpoint for "get_histories"
   When I send a GET request to get the histories
   Then The status code should be "200"
@@ -31,8 +31,8 @@ Feature: Get operation
   And Information retrieved from service should match with DB collection histories
 
 @US_025 @2
-Scenario: Get the histories of a user
-  Given I want to retrieve the histories that correspond to this id "604f8e2dac1a413c8aba77a5"
+Scenario: Get an empty list of histories
+  Given I want to retrieve the histories that correspond to this id
   And I am targeting endpoint for "get_histories"
   When I send a GET request to get the histories
   Then The status code should be "200"

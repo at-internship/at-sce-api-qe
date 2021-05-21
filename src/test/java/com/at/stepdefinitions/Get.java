@@ -137,9 +137,9 @@ public class Get {
         System.out.println("The values of all users match.");
     }
 
-    @Given("I want to retrieve the histories that correspond to this id {string}")
-    public void the_user_that_corresponds_to_this_id_has_histories(String id) {
-        base.id = id;
+    @Given("I want to retrieve the histories that correspond to this id")
+    public void the_user_that_corresponds_to_this_id_has_histories() {
+        base.id = MongoDBUtils.getRandomID(base.environment, base.uridb, "users");
     }
 
     @When("I send a GET request to get the histories")
@@ -222,7 +222,7 @@ public class Get {
     @And("I am completing the path")
     public void i_Am_Completing_The_Path() {
         if(base.id!=null){
-            base.apiResource = base.apiResource+"/"+base.id;}
+            base.apiResource = base.apiResource+base.id;}
 
 
 

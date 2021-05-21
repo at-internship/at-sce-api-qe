@@ -1,6 +1,6 @@
 @Delete
 
-Feature: Delete users from database
+Feature: Delete
 
   Background:
     Given I am working on "QA" environment
@@ -20,6 +20,7 @@ Feature: Delete users from database
     When I send a POST request
     Then  The status code should be "201"
     When I use a existent id
+    And I have access to "at-sso-db" database
     And I send a delete request
     Then the response code should be "204"
     And The response body should be null
@@ -27,6 +28,8 @@ Feature: Delete users from database
   @US_021 @US_051 @2
   Scenario: Create a delete request with an id that does not exist in the database 
     Given I am targeting endpoint for "delete_users"
+    And I am targeting "at-sso-api" service
+    And I have access to "at-sso-db" database
     When  I use a not existent id
     And I send a delete request
     Then the response code should be "404"
