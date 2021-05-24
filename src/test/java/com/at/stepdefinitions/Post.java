@@ -356,7 +356,6 @@ public class Post {
 
 	}
 
-/////////////////////////////////////////
     @Before("@US_038 and @Create or @Update")
     public void create_body_for_a_new_user() {
         userRequest.setType(QARandomData.correctRangeInt(1, 2));
