@@ -21,7 +21,7 @@ Feature: POST for Histories
     And I have access to "at-sce-db" database
     When I send a GET request to get the histories
     Then The status code should be "401"
-    And The number of registered histories should be 0
+    And I have the global error message
 
   @US_030 @1
   Scenario: Create a new history with all fields filled with the correct data.
