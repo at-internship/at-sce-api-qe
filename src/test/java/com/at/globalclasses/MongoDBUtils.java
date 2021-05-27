@@ -4,6 +4,8 @@ package com.at.globalclasses;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.Locale;
+
 public class MongoDBUtils {
     public static boolean existID(String env, String mDataBase, String collection, String id) {
         MongoDBConnection db = new MongoDBConnection(env, mDataBase);
@@ -152,7 +154,7 @@ public class MongoDBUtils {
         if ((firstName1 == null && firstName == "") || (firstName == null && firstName1 == "") || (firstName == null && firstName1 == null)) {
             bool = true;
         } else {
-            bool = firstName.equals(firstName1);
+            bool = firstName.equalsIgnoreCase(firstName1);
         }
         if (bool == false) {
             return bool;
@@ -160,7 +162,7 @@ public class MongoDBUtils {
         if ((lastName1 == null && lastName == "") || (lastName == null && lastName1 == "") || (lastName == null && lastName1 == null)) {
             bool = true;
         } else {
-            bool = lastName.equals(lastName1);
+            bool = lastName.equalsIgnoreCase(lastName1);
         }
         if (bool == false) {
             return bool;

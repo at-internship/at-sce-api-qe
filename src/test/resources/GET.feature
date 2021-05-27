@@ -3,8 +3,8 @@
 Feature: Get
   Background:
     Given I am working on "QA" environment
-    And I am targeting "at-sce-api" service
-    And I have access to "at-sce-db" database
+    And I am targeting "at-sso-api" service
+    And I have access to "at-sso-db" database
 
   @US_016 @1
   Scenario: Get all registered users in the DB with the correct information when the number of users is > 0

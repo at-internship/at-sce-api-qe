@@ -31,14 +31,14 @@ public class Put {
     }
 
     @Before("@US_020 and not @2")
-    public void create_body_for_a_new_user(){
+    public void create_body_for_a_new_user() throws Exception {
         Lorem lorem = LoremIpsum.getInstance();
         JSONObject jsonBodyRequest = new JSONObject();
         jsonBodyRequest.put("type", 1);
         jsonBodyRequest.put("firstName", lorem.getFirstName().toLowerCase());
         jsonBodyRequest.put("lastName", lorem.getLastName().toLowerCase());
         jsonBodyRequest.put("email", lorem.getFirstName().toLowerCase()+lorem.getFirstName().toLowerCase()+"@gmail.com");
-        jsonBodyRequest.put("password", lorem.getFirstName()+"12345678");
+        jsonBodyRequest.put("password", RSAUtil.encryptString(lorem.getFirstName()+"12345678"));
         jsonBodyRequest.put("status", 1);
         base.requestBody = jsonBodyRequest.toString();
         base.apiResource = ApiPath.updating_users.getApiPath();;
@@ -67,7 +67,7 @@ public class Put {
 
 
     @Given("I have the following information to update user by id and build a request body:")
-    public void i_have_the_following_information_to_update_user_by_id_and_build_a_request_body(Map<String, String> userTable) {
+    public void i_have_the_following_information_to_update_user_by_id_and_build_a_request_body(Map<String, String> userTable) throws Exception {
         JSONObject jsonBodyRequest = new JSONObject();
 
         try {
@@ -85,7 +85,7 @@ public class Put {
         jsonBodyRequest.put("firstName", userTable.get("firstName"));
         jsonBodyRequest.put("lastName", userTable.get("lastName"));
         jsonBodyRequest.put("email", userTable.get("email"));
-        jsonBodyRequest.put("password", userTable.get("password"));
+        jsonBodyRequest.put("password",RSAUtil.encryptString(userTable.get("password")));
         base.requestBody = jsonBodyRequest.toString();
     }
 
@@ -129,6 +129,7 @@ public class Put {
 
     @Then("The status code of the result should be {string}")
     public void the_status_code_of_the_result_should_be(String statusCode) {
+        QAUtils.expectedStatus=statusCode;
         int status = Integer.parseInt(statusCode);
         Assert.assertEquals(status, base.ServiceApi.response.getStatusCode().value());
     }

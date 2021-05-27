@@ -4,8 +4,8 @@ Feature: Delete
 
   Background:
     Given I am working on "QA" environment
-    And I am targeting "at-sce-api" service
-    And I have access to "at-sce-db" database
+    And I am targeting "at-sso-api" service
+    And I have access to "at-sso-db" database
 
   @US_021 @US_051 @1
   Scenario: Create a delete request to remove a user from database using the id generated in database
@@ -13,11 +13,11 @@ Feature: Delete
     And I have the following information for create a new user and build a request body:
       | type      | 1                      					|
       | firstName | kevin                  					|
-      | lastName  | castillo                				|
+      | lastName  | castillo                	 			|
       | email     | kevin.castillo@agilethouhgt.com         |
       | password  | CAstill0ro3s          					|
       | status    | 0                      					|
-    When I send a POST request
+    When I send a POST request to "create"
     Then  The status code should be "201"
     When I use a existent id
     And I have access to "at-sso-db" database
@@ -28,11 +28,9 @@ Feature: Delete
   @US_021 @US_051 @2
   Scenario: Create a delete request with an id that does not exist in the database 
     Given I am targeting endpoint for "delete_users"
-    And I am targeting "at-sso-api" service
-    And I have access to "at-sso-db" database
     When  I use a not existent id
     And I send a delete request
-    Then the response code should be "401"
+    Then the response code should be "404"
 
 
   @US_038 @deleting @33 @Deprecated

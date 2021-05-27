@@ -37,7 +37,7 @@ public class Delete {
 		userRequest.setFirstName(userTable.get("firstName"));
 		userRequest.setLastName(userTable.get("lastName"));
 		userRequest.setEmail(userTable.get("email"));
-		userRequest.setPassword(userTable.get("password"));
+		userRequest.setPassword(RSAUtil.encryptString(userTable.get("password")));
 		userRequest.setStatus(Integer.parseInt(userTable.get("status")));
 
 		Gson gson = new Gson();
@@ -49,6 +49,7 @@ public class Delete {
 		String idRequestBody = base.ServiceApi.response.getBody();
 		JSONObject idRequestBodyJson = new JSONObject(idRequestBody);
 		id = idRequestBodyJson.get("id").toString();
+
 	}
 
 	@When("I use a not existent id")
@@ -59,6 +60,7 @@ public class Delete {
 
 	@When("I send a delete request")
 	public void i_send_a_delete_request() {
+
 		base.response = base.ServiceApi.retrieveDelete(base.ServiceApi.hostName, base.apiResource + "/" + id);
 	}
 

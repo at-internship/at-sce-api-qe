@@ -7,8 +7,11 @@ import org.json.JSONException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.Data;
@@ -613,5 +616,23 @@ public static JSONObject getJUserByStatus(String env, String mDataBase, String c
 
         }
         return bool;
+    }
+
+    public static String getFromProperties(String fileName, String property ) throws Exception{
+        Properties prop = new Properties();
+        String propFileName = fileName;
+        InputStream inputStream = QAUtils.class.getClassLoader().getResourceAsStream(propFileName);
+        try{
+            if(inputStream==null){
+                throw new FileNotFoundException("Property file :"+fileName+ "not found");
+            }
+            prop.load(inputStream);
+
+        } catch (Exception exc){
+            exc.printStackTrace();
+        }
+        return prop.getProperty(property);
+
+
     }
 }

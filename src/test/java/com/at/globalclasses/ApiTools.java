@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.ResponseErrorHandler;
@@ -50,6 +52,7 @@ public class ApiTools {
 //			headers.add("Authorization", null);
             headers.add("User-Agent", "cheese");
             headers.setContentType(contentType);
+            headers.add("Authorization",getFromProperties("config.properties","QA.basicAuth"));
 
             restTemplate.setErrorHandler(new ResponseErrorHandler() {
 
@@ -69,11 +72,12 @@ public class ApiTools {
             System.out.println(e.getMessage());
             response = new ResponseEntity<String>(((HttpStatusCodeException) e).getResponseBodyAsString(),((HttpStatusCodeException) e).getStatusCode());
 
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return response;
     }
-
 
     public ResponseEntity<String> PUTMethod(String apiPath, String requestBody) {
         try {
@@ -81,7 +85,7 @@ public class ApiTools {
             HttpHeaders headers = new HttpHeaders();
             headers.add("OUser-Agent", "User-Agent");
             headers.add("Content-Type", "application/json");
-
+            headers.add("Authorization",getFromProperties("config.properties","QA.basicAuth"));
             restTemplate.setErrorHandler(new ResponseErrorHandler() {
 
                 @Override
@@ -103,6 +107,8 @@ public class ApiTools {
             response = new ResponseEntity<String>(((HttpStatusCodeException) e).getResponseBodyAsString(),
                     ((HttpStatusCodeException) e).getStatusCode());
 
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return response;
     }
@@ -115,6 +121,7 @@ public class ApiTools {
             //headers.setContentType(contentType);
 
             HttpHeaders headers = new HttpHeaders();
+            headers.add("Authorization",getFromProperties("config.properties","QA.basicAuth"));
             headers.add("OUser-Agent", "User-Agent");
             headers.add("Content-Type", "application/json");
 
@@ -140,6 +147,8 @@ public class ApiTools {
             System.out.println(e.getMessage());
             response = new ResponseEntity<String>(((HttpStatusCodeException) e).getResponseBodyAsString(),((HttpStatusCodeException) e).getStatusCode());
 
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return response;
     }
@@ -148,7 +157,7 @@ public class ApiTools {
         //		SSLCertificateValidation.disable();
         try {
             //			headers.add("Authorization", null);
-
+            headers.add("Authorization",getFromProperties("config.properties","QA.basicAuth"));
             headers.setContentType(contentType);
             restTemplate.setErrorHandler(new ResponseErrorHandler() {
 
@@ -166,6 +175,55 @@ public class ApiTools {
         } catch (HttpClientErrorException e) {
             System.out.println(e.getMessage());
             response = new ResponseEntity<String>(((HttpStatusCodeException) e).getResponseBodyAsString(),((HttpStatusCodeException) e).getStatusCode());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    public ResponseEntity<String> POSTMethod(String hostName, String apiPath, String username,String password) {
+//		SSLCertificateValidation.disable();
+
+        try {
+//			headers.add("Authorization", null);
+            //headers.add("User-Agent", "cheese");
+            //headers.setContentType(contentType);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Authorization",getFromProperties("config.properties","QA.basicAuth"));
+            headers.add("OUser-Agent", "User-Agent");
+            headers.add("Content-Type", "application/x-www-form-urlencoded");
+            MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+            map.add("grant_type","password");
+            map.add("username",username);
+
+            map.add("password",password);
+
+
+            restTemplate.setErrorHandler(new ResponseErrorHandler() {
+
+                @Override
+                public boolean hasError(ClientHttpResponse response) throws IOException {
+                    return false;
+                }
+
+                @Override
+                public void handleError(ClientHttpResponse response) throws IOException {
+                }
+            });
+            //HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(map, headers);
+            HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(map, headers);
+            //System.out.println("\n\tRequest body: " + requestBody );
+            //System.out.println("\n\tFULL PATH " + hostName + "" + apiPath + "" + HttpMethod.POST + "" + requestEntity + "" + String.class);
+            //response = restTemplate.exchange(hostName + apiPath, HttpMethod.PUT, , String.class);
+            response = restTemplate.exchange(hostName + apiPath, HttpMethod.POST, requestEntity, String.class);
+            //System.out.println("statuscode  "+response.getStatusCode()+"  body  "+ response.getBody()+" status code value "+response.getStatusCodeValue());
+        } catch (HttpClientErrorException e) {
+            System.out.println(e.getMessage());
+            response = new ResponseEntity<String>(((HttpStatusCodeException) e).getResponseBodyAsString(),((HttpStatusCodeException) e).getStatusCode());
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return response;
     }

@@ -22,6 +22,7 @@ import org.json.JSONObject;
 import org.junit.Assert;
 import org.skyscreamer.jsonassert.JSONAssert;
 
+import java.util.Base64;
 import java.util.Map;
 
 public class Post {
@@ -69,10 +70,16 @@ public class Post {
         }
     }
 
-    @When("I send a POST request")
-    public void i_send_a_POST_request() {
-        base.response = base.ServiceApi.POSTMethod(base.ServiceApi.hostName, base.apiResource, base.requestBody);
-    }
+    @When("I send a POST request to {string}")
+    public void i_send_a_POST_request(String type) {
+
+        if(type.equals("login")){
+            base.response = base.ServiceApi.POSTMethod(base.ServiceApi.hostName, base.apiResource, userJson.get("email").toString(),userJson.get("password").toString());
+        }
+        if(type.equals("create")) {
+            base.response = base.ServiceApi.POSTMethod(base.ServiceApi.hostName, base.apiResource, base.requestBody);
+        }
+        }
 
     @Then("The status code should be {string}")
     public void the_status_code_should_be(String statusCode) {
@@ -136,9 +143,8 @@ public class Post {
         JSONObject jsonRequest = new JSONObject(base.requestBody);
 
         MongoDBUtils mongo = new MongoDBUtils();
-        String collectionBody = mongo.obtainObject(base.environment, base.dataBase, collection, base.response.getBody());
+        String collectionBody = mongo.obtainObject(base.environment, base.uridb, collection, base.response.getBody());
         JSONObject jsonResponse = new JSONObject(collectionBody);
-
 
         boolean bool = mongo.compareUsersDocuments(jsonRequest,jsonResponse);
 
@@ -160,7 +166,7 @@ public class Post {
 
         if (body.equals("correct")) {
             JSONObject correctResponse = new JSONObject(base.ServiceApi.response.getBody());
-            String id = correctResponse.getString("id");
+            String id = correctResponse.getString("_id");
 
             MongoDBUtils userDB = new MongoDBUtils();
             JSONObject userToCompare = new JSONObject(userDB.getJObjectByID(base.environment, base.uridb, "users", id));
@@ -169,11 +175,11 @@ public class Post {
         }
         if (body.equals("failure")) {
             JSONObject failureResponse = new JSONObject(base.ServiceApi.response.getBody());
-            Assert.assertNotNull(failureResponse.get("timestamp"));
-            Assert.assertEquals("Unauthorized", failureResponse.get("error"));
-            Assert.assertEquals("Unauthorized", failureResponse.get("message"));
-            Assert.assertEquals("/api/v1/login", failureResponse.get("path"));
-        }
+
+        Assert.assertTrue(failureResponse.get("error").equals("unauthorized") || failureResponse.get("error").equals("server_error") || failureResponse.get("error").equals("invalid_request"));
+        Assert.assertTrue(failureResponse.get("error_description").equals("Internal Server Error") || failureResponse.get("error_description").equals("Invalid login credentials.") || failureResponse.get("error_description").equals("Missing grant type"));
+
+           }
 
 
     }
@@ -356,16 +362,16 @@ public class Post {
 
 	}
 
-    @Before("@US_038 and @Create or @Update")
-    public void create_body_for_a_new_user() {
+    @Before("@US_038 or @US_018 or @Create or @Update")
+    public void create_body_for_a_new_user() throws Exception {
         userRequest.setType(QARandomData.correctRangeInt(1, 2));
         userRequest.setFirstName(lorem.getFirstName());
         userRequest.setLastName(lorem.getLastName());
         userRequest.setEmail(lorem.getEmail());
-        userRequest.setPassword(lorem.getFirstName() + "123456789");
+        userRequest.setPassword(RSAUtil.encryptString((lorem.getFirstName() + "123456789")));
         userRequest.setStatus(QARandomData.correctRangeInt(0, 1));
         userJson = new JSONObject(userRequest);
-    }
+       }
 
     @Given("I have the information to {string} a user with {string} {string}:")
     public void i_have_the_information_to_a_user_with(String operation,String field, String data) {

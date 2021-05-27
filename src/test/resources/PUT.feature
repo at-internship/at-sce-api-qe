@@ -3,8 +3,8 @@ Feature: Put
 
   Background:
     Given I am working on "QA" environment
-    And I am targeting "at-sce-api" service
-    And I have access to "at-sce-db" database
+    And I am targeting "at-sso-api" service
+    And I have access to "at-sso-db" database
 
   @US_020
   Scenario: User in the data is not changed ie database, value sent in lastName is int
@@ -38,7 +38,7 @@ Feature: Put
     Then The status code of the result should be "400"
     And Information from response body should match with error "Bad Request" message
 
-  @US_020 @8
+  @US_020 @8 @Deprecated
   Scenario: User data is not changed in the database, value sent in password is int
     Given I get the id of a new user
     And I have the following information to update user by id and build a request body:
@@ -84,7 +84,7 @@ Feature: Put
     Then The status code of the result should be "400"
     And Information from response body should match with error "Bad Request" message
 
-  @US_020 @14
+  @US_020 @14 @Deprecated
   Scenario: User data is not changed in the database, password can be null
     Given I get the id of a new user
     And I have the following information to update user by id and build a request body:
