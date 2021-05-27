@@ -74,10 +74,19 @@ public class Post {
     public void i_send_a_POST_request(String type) {
 
         if(type.equals("login")){
+            if(userJson.isNull("email")){
+            userJson.put("email","null");
+            }
+            if(userJson.isNull("password")){
+                userJson.put("password","null");
+            }
             base.response = base.ServiceApi.POSTMethod(base.ServiceApi.hostName, base.apiResource, userJson.get("email").toString(),userJson.get("password").toString());
         }
         if(type.equals("create")) {
             base.response = base.ServiceApi.POSTMethod(base.ServiceApi.hostName, base.apiResource, base.requestBody);
+        }
+        if(type.equals("histories")) {
+            base.response = base.ServiceApi.POSTMethod(base.ServiceApi.hostName, base.apiResource, base.requestBody,1);
         }
         }
 
@@ -412,7 +421,7 @@ public class Post {
     }
 
     @Given("I want to login a user with the {string} {string}")
-    public void i_Want_To_Login_A_User_With_The(String field, String data) {
+    public void i_Want_To_Login_A_User_With_The(String field, String data) throws Exception {
         QAUtils.field=field;
         if (field.equals("status")) {
             userJson = QAUtils.getJUserByStatus(base.environment, base.uridb, "users", "0"); }
@@ -421,7 +430,11 @@ public class Post {
             if (data.equals("null")) {
                 userJson.put(field, (Object) null); }
             if(data.equals("invalid")){
-                userJson.put(field,QARandomData.randomString()); }}
+                userJson.put(field,QARandomData.randomString()); }
+        if(field.equals("password") && data.equals("invalid")){
+            userJson.put(field,RSAUtil.encryptString(QARandomData.randomString()));
+        }
+        }
 
         userJson.remove("type");
         userJson.remove("status");

@@ -1,4 +1,4 @@
-@Delete
+@Delete @SSO
 
 Feature: Delete
 

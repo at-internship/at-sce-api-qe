@@ -1,4 +1,4 @@
-@Put
+@Put @SSO
 Feature: Put
 
   Background:
