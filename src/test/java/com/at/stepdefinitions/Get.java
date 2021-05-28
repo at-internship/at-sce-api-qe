@@ -223,7 +223,7 @@ public class Get {
                 scenario.attach(base.response.getBody(),"text/plain","Response Body");}
                catch (Exception e){
                 scenario.attach("There is no Response Body","text/plain","Response Body");
-                }
+                } //
         scenario.attach(QAUtils.expectedStatus,"text/plain","Expected Status");
         scenario.attach(base.response.getStatusCode().toString(),"text/plain","Current Status");
         scenario.attach(scenario.getSourceTagNames().toString(),"text/plain","Tags");
