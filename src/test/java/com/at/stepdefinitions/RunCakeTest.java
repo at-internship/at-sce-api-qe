@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
         "json:target/cucumber-reports/cucumber.json"},
         features = {"src/test/resources/"},
         glue = {"com.at.stepdefinitions"},
-         monochrome = false)
+        tags ="@SCE and not @Deprecated",
+          monochrome = false)
 public class RunCakeTest {
 }

@@ -15,13 +15,16 @@ Feature: POST for Histories
     And Information retrieved from service should match with DB collection histories
   @US_025 @2
   Scenario: Get an empty list of histories
-    Given I want to retrieve the histories that correspond to this id
+    Given I have the information to "create" a user with "correct" "data":
+    And   I am targeting endpoint for "create_users"
+    When  I send a POST request to "create"
+    Then  The status code should be "201"
     And I am targeting endpoint for "get_histories"
     And I am targeting "at-sce-api" service
     And I have access to "at-sce-db" database
     When I send a GET request to get the histories
     Then The status code should be "401"
-    And I have the global error message
+    And The number of registered histories should be 0
 
   @US_030 @1
   Scenario: Create a new history with all fields filled with the correct data.

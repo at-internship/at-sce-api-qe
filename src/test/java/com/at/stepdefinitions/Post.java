@@ -371,7 +371,7 @@ public class Post {
 
 	}
 
-    @Before("@US_038 or @US_018 or @Create or @Update")
+    @Before("@US_025 or @US_038 or @US_018 or @Create or @Update")
     public void create_body_for_a_new_user() throws Exception {
         userRequest.setType(QARandomData.correctRangeInt(1, 2));
         userRequest.setFirstName(lorem.getFirstName());
