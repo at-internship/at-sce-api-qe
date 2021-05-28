@@ -212,8 +212,6 @@ public class Get {
     @After
     public void scenarios_Info (Scenario scenario) throws Exception {
 
-        scenario.attach(scenario.getName(),"text/plain","Scenario Name");
-        scenario.attach(scenario.getStatus().toString(),"text/plain","Scenario Status");
             try{
                 scenario.attach(base.requestBody,"text/plain","Request Body");}
                 catch (Exception e){
@@ -223,9 +221,7 @@ public class Get {
                 scenario.attach(base.response.getBody(),"text/plain","Response Body");}
                catch (Exception e){
                 scenario.attach("There is no Response Body","text/plain","Response Body");
-                } //
-        scenario.attach(QAUtils.expectedStatus,"text/plain","Expected Status");
-        scenario.attach(base.response.getStatusCode().toString(),"text/plain","Current Status");
+                }
         scenario.attach(scenario.getSourceTagNames().toString(),"text/plain","Tags");
         scenario.attach(base.apiResource,"text/plain","Path");
             }
